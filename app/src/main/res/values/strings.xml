@@ -10,4 +10,9 @@
       the License.
       -->
     <string name="app_name">JetWeatherfy</string>
+    <string name="sunny">Sunny</string>
+    <string name="cloudy">Cloudy</string>
+    <string name="rainy">Rainy</string>
+    <string name="thunderstorm">Thuderstorm</string>
+    <string name="windy">Windy</string>
 </resources>

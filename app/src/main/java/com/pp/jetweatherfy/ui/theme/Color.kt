@@ -17,7 +17,7 @@ package com.pp.jetweatherfy.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val purple200 = Color(0xFFBB86FC)
-val purple500 = Color(0xFF6200EE)
-val purple700 = Color(0xFF3700B3)
-val teal200 = Color(0xFF03DAC5)
+val grayish_blue_900 = Color(0xFF282b39)
+val grayish_blue_300 = Color(0xFF979cb1)
+val white_50 = Color(0xFFFAFAFA)
+val white_50_65a = Color(0xA6FAFAFA)

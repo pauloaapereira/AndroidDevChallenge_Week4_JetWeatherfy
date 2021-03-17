@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.domain.models
+package com.pp.jetweatherfy.domain
 
-import com.squareup.moshi.Json
-
-data class Coordinates(
-    @Json(name = "lat")
-    val lat: Double? = null,
-    @Json(name = "lon")
-    val lon: Double? = null
-)
+enum class City(val identification: String) {
+    SanFrancisco("San Francisco"),
+    Lisbon("Lisbon"),
+    London("London")
+}

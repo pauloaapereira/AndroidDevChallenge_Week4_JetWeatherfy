@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.domain.models
+package com.pp.jetweatherfy.data
 
-import com.squareup.moshi.Json
+import com.pp.jetweatherfy.domain.City
+import com.pp.jetweatherfy.domain.models.Forecast
 
-data class Clouds(
-    @Json(name = "all")
-    val all: Int? = null
-)
+interface IForecastRepository {
+    suspend fun getForecast(city: City): Forecast
+}

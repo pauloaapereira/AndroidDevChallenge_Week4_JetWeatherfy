@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.domain.models
+package com.pp.jetweatherfy.data
 
-import com.squareup.moshi.Json
+import com.pp.jetweatherfy.domain.City
+import javax.inject.Inject
 
-data class Wind(
-    @Json(name = "deg")
-    val deg: Int? = null,
-    @Json(name = "speed")
-    val speed: Double? = null
-)
+class ForecastRepository @Inject constructor(private val forecastDao: ForecastDao) :
+    IForecastRepository {
+
+    override suspend fun getForecast(city: City) = forecastDao.getForecast(city)
+}

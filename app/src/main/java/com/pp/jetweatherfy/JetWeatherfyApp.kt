@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.domain.models
+package com.pp.jetweatherfy
 
-import com.squareup.moshi.Json
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-data class Rain(
-    @Json(name = "3h")
-    val h: Double? = null
-)
+@HiltAndroidApp
+class JetWeatherfyApp : Application()

@@ -15,17 +15,9 @@
  */
 package com.pp.jetweatherfy.data
 
+import com.pp.jetweatherfy.domain.City
 import com.pp.jetweatherfy.domain.models.Forecast
-import com.pp.jetweatherfy.domain.models.ForecastUnit
-import retrofit2.http.GET
-import retrofit2.http.Query
-import java.util.Locale
 
 interface ForecastDao {
-    @GET("forecast")
-    suspend fun getForecast(
-        @Query("q") query: String,
-        @Query("lang") language: String = Locale.getDefault().displayLanguage,
-        @Query("units") units: String = ForecastUnit.Metric.unit
-    ): Forecast
+    suspend fun getForecast(city: City): Forecast
 }

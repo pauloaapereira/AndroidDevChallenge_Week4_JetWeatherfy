@@ -15,11 +15,22 @@
  */
 package com.pp.jetweatherfy.domain.models
 
-import com.squareup.moshi.Json
+import com.pp.jetweatherfy.domain.Weather
 
 data class Forecast(
-    @Json(name = "city")
-    val city: City? = null,
-    @Json(name = "list")
-    val list: List<ForecastItem>? = null
+    val city: String,
+    val dailyForecasts: List<DailyForecast> = listOf()
+)
+
+data class DailyForecast(
+    val timestamp: String,
+    val hourlyForecasts: List<HourlyForecast> = listOf()
+)
+
+data class HourlyForecast(
+    val timestamp: String,
+    val temperature: Int,
+    val precipitationProbability: Int,
+    val windSpeed: Int,
+    val description: Weather
 )

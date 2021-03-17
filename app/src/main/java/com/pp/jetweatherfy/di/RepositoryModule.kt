@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.domain.models
+package com.pp.jetweatherfy.di
 
-import com.squareup.moshi.Json
+import com.pp.jetweatherfy.data.ForecastRepository
+import com.pp.jetweatherfy.data.IForecastRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-data class Weather(
-    @Json(name = "description")
-    val description: String? = null,
-    @Json(name = "icon")
-    val icon: String? = null,
-    @Json(name = "id")
-    val id: Int? = null,
-    @Json(name = "main")
-    val main: String? = null
-)
+@Module
+@InstallIn(SingletonComponent::class)
+interface RepositoryModule {
+
+    @Binds
+    fun bindForecastRepository(
+        forecastRepository: ForecastRepository
+    ): IForecastRepository
+}

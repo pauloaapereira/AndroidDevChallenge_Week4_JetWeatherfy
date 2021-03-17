@@ -16,28 +16,72 @@
 package com.pp.jetweatherfy.ui.theme
 
 import androidx.compose.material.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.pp.jetweatherfy.R
 
-// Set of Material typography styles to start with
+private val AppFontFamily = FontFamily(
+    fonts = listOf(
+        Font(
+            resId = R.font.comfortaa_light,
+            weight = FontWeight.Light,
+            style = FontStyle.Normal
+        ),
+        Font(
+            resId = R.font.comfortaa_bold,
+            weight = FontWeight.Bold,
+            style = FontStyle.Normal
+        ),
+        Font(
+            resId = R.font.comfortaa_semibold,
+            weight = FontWeight.SemiBold,
+            style = FontStyle.Normal
+        )
+    )
+)
+
+private val DefaultTypography = Typography()
 val typography = Typography(
-    body1 = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    )
-        /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+    h1 = DefaultTypography.h1.copy(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        letterSpacing = 0.sp
     ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+    h2 = DefaultTypography.h2.copy(
+        fontFamily = AppFontFamily, fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        letterSpacing = (0.15).sp
+    ),
+    subtitle1 = DefaultTypography.subtitle1.copy(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.Light,
+        fontSize = 16.sp,
+        letterSpacing = 0.sp
+    ),
+    body1 = DefaultTypography.body1.copy(
+        fontFamily = AppFontFamily, fontWeight = FontWeight.Light,
+        fontSize = 14.sp,
+        letterSpacing = 0.sp
+    ),
+    body2 = DefaultTypography.body2.copy(
+        fontFamily = AppFontFamily, fontWeight = FontWeight.Light,
+        fontSize = 12.sp,
+        letterSpacing = 0.sp
+    ),
+    button = DefaultTypography.button.copy(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        letterSpacing = 1.sp
+    ),
+    caption = DefaultTypography.caption.copy(
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
+        letterSpacing = 0.sp
     )
-    */
 )

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JetWeatherfy</string>
+    <string name="cloudy">Nublado</string>
+    <string name="rainy">Chuvoso</string>
+    <string name="sunny">Sol</string>
+    <string name="thunderstorm">Trovoada</string>
+    <string name="windy">Ventoso</string>
+</resources>

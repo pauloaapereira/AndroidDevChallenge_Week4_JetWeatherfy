@@ -15,15 +15,12 @@
  */
 package com.pp.jetweatherfy.di
 
-import com.pp.jetweatherfy.BuildConfig.WEATHER_API_URL
+import com.pp.jetweatherfy.data.FakeForecastDao
 import com.pp.jetweatherfy.data.ForecastDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -32,23 +29,7 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().build()
-    }
-
-    @Singleton
-    @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .client(okHttpClient)
-            .baseUrl(WEATHER_API_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build()
-    }
-
-    @Singleton
-    @Provides
-    fun provideForecastDao(retrofit: Retrofit): ForecastDao {
-        return retrofit.create(ForecastDao::class.java)
+    fun provideForecastDao(): ForecastDao {
+        return FakeForecastDao()
     }
 }
