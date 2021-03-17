@@ -23,13 +23,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.pp.jetweatherfy.ui.theme.MyTheme
+import com.pp.jetweatherfy.ui.theme.JetWeatherfyTheme
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyTheme {
+            JetWeatherfyTheme {
                 MyApp()
             }
         }
@@ -47,7 +47,7 @@ fun MyApp() {
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
 @Composable
 fun LightPreview() {
-    MyTheme {
+    JetWeatherfyTheme {
         MyApp()
     }
 }
@@ -55,7 +55,7 @@ fun LightPreview() {
 @Preview("Dark Theme", widthDp = 360, heightDp = 640)
 @Composable
 fun DarkPreview() {
-    MyTheme(darkTheme = true) {
+    JetWeatherfyTheme(darkTheme = true) {
         MyApp()
     }
 }

@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -29,6 +31,8 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            buildConfigField "String", "WEATHER_API_URL", "\"http://api.openweathermap.org/data/2.5/\""
+            buildConfigField "String", "WEATHER_API_KEY", "\"8ff40a497c201d019173871998ac14b1\""
         }
         release {
             minifyEnabled false
@@ -44,7 +48,6 @@ android {
         compose true
 
         // Disable unused AGP features
-        buildConfig false
         aidl false
         renderScript false
         resValues false
@@ -74,8 +77,25 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0'
 
+    // Testing
     testImplementation 'junit:junit:4.13.2'
-
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+
+    // Lottie animations
+    implementation "com.airbnb.android:lottie-compose:1.0.0-alpha07-SNAPSHOT"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:1.0.0-alpha09"
+
+    // Dependency Injection
+    implementation "com.google.dagger:hilt-android:$dagger_hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$dagger_hilt_version"
+    implementation "androidx.hilt:hilt-common:$androidX_hilt_version"
+    kapt "androidx.hilt:hilt-compiler:$androidX_hilt_version"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidX_hilt_viewmodel_version"
+
+    // Network Requests
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
 }
