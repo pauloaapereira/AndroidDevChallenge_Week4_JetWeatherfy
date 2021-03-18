@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.domain
+package com.pp.jetweatherfy.domain.models
 
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes

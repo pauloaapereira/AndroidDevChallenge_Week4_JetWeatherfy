@@ -6,4 +6,7 @@
     <string name="rainy">Lluvioso</string>
     <string name="thunderstorm">Tormenta</string>
     <string name="windy">Ventoso</string>
+    <string name="choose_city">Choose your city</string>
+    <string name="location">Location</string>
+    <string name="selected">Selected</string>
 </resources>

@@ -19,33 +19,21 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import com.pp.jetweatherfy.domain.City
+import com.pp.jetweatherfy.ui.components.JetWeatherfyScreen
 import com.pp.jetweatherfy.ui.theme.JetWeatherfyTheme
-import com.pp.jetweatherfy.utils.Curtain
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<ForecastViewModel>()
 
+    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -59,45 +47,12 @@ class MainActivity : AppCompatActivity() {
 }
 
 // Start building your app here!
+@ExperimentalAnimationApi
 @Composable
 fun JetWeatherfy(forecastViewModel: ForecastViewModel) {
-    val forecast by forecastViewModel.forecast.observeAsState(null)
-    var isCurtainOpened by remember { mutableStateOf(false) }
+    val forecast by forecastViewModel.forecast.observeAsState()
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Curtain(
-                    openedFromOutside = isCurtainOpened,
-                    mainCell = {
-                        Card(Modifier.clickable { isCurtainOpened = true }) {
-                            Text(text = "Choose your city")
-                        }
-                    },
-                    foldCells = listOf(
-                        {
-                            Button(onClick = { isCurtainOpened = false }) {
-                                Text(text = City.SanFrancisco.identification)
-                            }
-                        },
-                        {
-                            Button(onClick = { isCurtainOpened = false }) {
-                                Text(text = City.Lisbon.identification)
-                            }
-                        },
-                        {
-                            Button(onClick = { isCurtainOpened = false }) {
-                                Text(text = City.London.identification)
-                            }
-                        }
-                    )
-                )
-            }
-        }
+    JetWeatherfyScreen(forecast = forecast) { city ->
+        forecastViewModel.selectCity(city)
     }
 }

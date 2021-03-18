@@ -15,92 +15,13 @@
  */
 package com.pp.jetweatherfy.data
 
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import com.pp.jetweatherfy.domain.City
-import com.pp.jetweatherfy.domain.Weather
-import com.pp.jetweatherfy.domain.models.DailyForecast
-import com.pp.jetweatherfy.domain.models.Forecast
-import com.pp.jetweatherfy.domain.models.HourlyForecast
-import com.pp.jetweatherfy.utils.darkenColor
-import com.pp.jetweatherfy.utils.isDarkColor
-import com.pp.jetweatherfy.utils.isLightColor
-import com.pp.jetweatherfy.utils.lightenColor
-import org.joda.time.DateTime
-import kotlin.random.Random
+import com.pp.jetweatherfy.domain.ForecastController
+import com.pp.jetweatherfy.domain.models.City
 
-class FakeForecastDao : ForecastDao {
+class FakeForecastDao(private val forecastController: ForecastController = ForecastController()) :
+    ForecastDao {
 
     override suspend fun getForecast(city: City) = getCityForecast(city)
 
-    private fun getCityForecast(city: City) = Forecast(
-        city = city.identification,
-        dailyForecasts = getDailyForecasts()
-    )
-
-    private fun getDailyForecasts(): List<DailyForecast> {
-        val today = DateTime.now()
-
-        return (0..6).map { dayNumber ->
-            val dayStartHour = if (dayNumber == 0) today.hourOfDay else 0
-            val day = today.plusDays(dayNumber).withHourOfDay(dayStartHour)
-
-            DailyForecast(
-                timestamp = day.toString(),
-                hourlyForecasts = getHourlyForecasts(day)
-            )
-        }
-    }
-
-    private fun getHourlyForecasts(day: DateTime): List<HourlyForecast> {
-        val temperature = Random.nextInt(0, 35)
-        val windSpeed = Random.nextInt(0, 100)
-        val precipitation = Random.nextInt(0, 100)
-        val description = when {
-            temperature > 21 && precipitation < 50 -> Weather.Sunny
-            windSpeed > 40 -> Weather.Windy
-            precipitation < 25 && temperature > 18 -> Weather.Cloudy
-            precipitation > 50 -> Weather.Rainy
-            precipitation > 60 && windSpeed > 35 -> Weather.Thunderstorm
-            else -> Weather.Sunny
-        }
-
-        val colorFeel = generateColorFeel(temperature, windSpeed, precipitation)
-
-        return (day.hourOfDay..23).map { hourNumber ->
-            val hour = day.withHourOfDay(hourNumber)
-
-            HourlyForecast(
-                timestamp = hour.toString(),
-                temperature = temperature,
-                precipitationProbability = precipitation,
-                windSpeed = windSpeed,
-                description = description,
-                backgroundColor = generateFeelGradient(colorFeel),
-                contentColor = when {
-                    colorFeel.isLightColor() -> colorFeel.darkenColor(.3f)
-                    colorFeel.isDarkColor()  -> colorFeel.lightenColor(.3f)
-                    else -> Color.Black
-                }
-            )
-        }
-    }
-
-    private fun generateColorFeel(temperature: Int, windSpeed: Int, precipitation: Int) =
-        Color(
-            red = (temperature * 255 / 35f) / 255f,
-            green = (windSpeed * 255 / 100f) / 255f,
-            blue = (precipitation * 255 / 100f) / 255f
-        )
-
-    private fun generateFeelGradient(baseColor: Color): Brush {
-        val lightenFactor = .3f
-
-        return Brush.verticalGradient(
-            colors = listOf(
-                baseColor,
-                baseColor.lightenColor(lightenFactor)
-            )
-        )
-    }
+    private fun getCityForecast(city: City) = forecastController.generateForecast(city)
 }

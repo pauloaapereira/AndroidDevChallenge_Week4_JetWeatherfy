@@ -15,7 +15,7 @@
  */
 package com.pp.jetweatherfy.data
 
-import com.pp.jetweatherfy.domain.City
+import com.pp.jetweatherfy.domain.models.City
 import com.pp.jetweatherfy.domain.models.Forecast
 
 interface IForecastRepository {

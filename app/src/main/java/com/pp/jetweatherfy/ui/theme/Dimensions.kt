@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.data
+package com.pp.jetweatherfy.ui.theme
 
-import com.pp.jetweatherfy.domain.models.City
-import com.pp.jetweatherfy.domain.models.Forecast
+import androidx.compose.ui.unit.dp
 
-interface ForecastDao {
-    suspend fun getForecast(city: City): Forecast
-}
+val SmallDimension = 8.dp
+val MediumDimension = 16.dp
+val BigDimension = 24.dp

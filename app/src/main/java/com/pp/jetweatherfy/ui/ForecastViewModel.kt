@@ -20,7 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pp.jetweatherfy.data.IForecastRepository
-import com.pp.jetweatherfy.domain.City
+import com.pp.jetweatherfy.domain.models.City
 import com.pp.jetweatherfy.domain.models.Forecast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,11 +31,15 @@ import javax.inject.Inject
 class ForecastViewModel @Inject constructor(private val forecastRepository: IForecastRepository) :
     ViewModel() {
 
-    private val _forecast = MutableLiveData<Forecast>(null)
+    private val _forecast = MutableLiveData<Forecast>()
     val forecast: LiveData<Forecast> = _forecast
 
-    fun getForecast(city: City) = viewModelScope.launch(Dispatchers.IO) {
+    fun selectCity(city: City) = viewModelScope.launch(Dispatchers.IO) {
         val result = forecastRepository.getForecast(city)
         _forecast.postValue(result)
+    }
+
+    init {
+        selectCity(City.SanFrancisco)
     }
 }
