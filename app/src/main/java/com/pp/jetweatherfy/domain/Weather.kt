@@ -17,66 +17,27 @@ package com.pp.jetweatherfy.domain
 
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import com.pp.jetweatherfy.R
-import com.pp.jetweatherfy.ui.theme.grayish_blue_900
-import com.pp.jetweatherfy.ui.theme.white_50
 
-enum class Weather(@StringRes val description: Int, @RawRes val animation: Int, val backgroundColor: Brush, val contentColor: Color) {
+enum class Weather(@StringRes val description: Int, @RawRes val animation: Int) {
     Sunny(
         description = R.string.sunny,
-        animation = R.raw.sunny,
-        backgroundColor = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFFF2994A),
-                Color(0xFFF2C94C)
-            )
-        ),
-        contentColor = grayish_blue_900
+        animation = R.raw.sunny
     ),
     Cloudy(
         description = R.string.cloudy,
-        animation = R.raw.cloudy,
-        backgroundColor = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFF8e9eab),
-                Color(0xFFeef2f3)
-            )
-        ),
-        contentColor = grayish_blue_900
+        animation = R.raw.cloudy
     ),
     Rainy(
         description = R.string.rainy,
-        animation = R.raw.rainy,
-        backgroundColor = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFF457fca),
-                Color(0xFF5691c8)
-            )
-        ),
-        contentColor = white_50
+        animation = R.raw.rainy
     ),
     Thunderstorm(
         description = R.string.thunderstorm,
-        animation = R.raw.thunderstorm,
-        backgroundColor = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFF1e3c72),
-                Color(0xFF2a5298)
-            )
-        ),
-        contentColor = white_50
+        animation = R.raw.thunderstorm
     ),
     Windy(
         description = R.string.windy,
-        animation = R.raw.windy,
-        backgroundColor = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFF11998e),
-                Color(0xFF38ef7d)
-            )
-        ),
-        contentColor = grayish_blue_900
+        animation = R.raw.windy
     )
 }

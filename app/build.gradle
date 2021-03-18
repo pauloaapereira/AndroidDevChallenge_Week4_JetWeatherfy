@@ -95,4 +95,7 @@ dependencies {
     // Animations
     implementation "com.airbnb.android:lottie-compose:1.0.0-alpha07-SNAPSHOT"
 
+    // Insets
+    implementation "dev.chrisbanes.accompanist:accompanist-insets:0.6.2"
+
 }

@@ -15,6 +15,8 @@
  */
 package com.pp.jetweatherfy.domain.models
 
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import com.pp.jetweatherfy.domain.Weather
 
 data class Forecast(
@@ -32,5 +34,7 @@ data class HourlyForecast(
     val temperature: Int,
     val precipitationProbability: Int,
     val windSpeed: Int,
-    val description: Weather
+    val description: Weather,
+    val backgroundColor: Brush,
+    val contentColor: Color
 )
