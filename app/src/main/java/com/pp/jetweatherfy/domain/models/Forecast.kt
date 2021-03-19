@@ -15,11 +15,8 @@
  */
 package com.pp.jetweatherfy.domain.models
 
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-
 data class Forecast(
-    val city: City,
+    var city: String = "",
     val dailyForecasts: List<DailyForecast> = listOf()
 ) {
     fun getFirstHourlyForecast(): HourlyForecast? {
@@ -29,17 +26,3 @@ data class Forecast(
     }
 }
 
-data class DailyForecast(
-    val timestamp: String,
-    val hourlyForecasts: List<HourlyForecast> = listOf()
-)
-
-data class HourlyForecast(
-    val timestamp: String,
-    val temperature: Int,
-    val precipitationProbability: Int,
-    val windSpeed: Int,
-    val weather: Weather,
-    val backgroundColor: Brush,
-    val contentColor: Color
-)

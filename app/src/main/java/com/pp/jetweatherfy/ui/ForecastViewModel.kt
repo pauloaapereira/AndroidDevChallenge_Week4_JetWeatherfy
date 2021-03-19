@@ -19,8 +19,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pp.jetweatherfy.data.IForecastRepository
-import com.pp.jetweatherfy.domain.models.City
+import com.pp.jetweatherfy.data.city.ICityRepository
+import com.pp.jetweatherfy.data.forecast.IForecastRepository
 import com.pp.jetweatherfy.domain.models.Forecast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,18 +28,31 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ForecastViewModel @Inject constructor(private val forecastRepository: IForecastRepository) :
+class ForecastViewModel @Inject constructor(
+    private val forecastRepository: IForecastRepository,
+    private val cityRepository: ICityRepository
+) :
     ViewModel() {
 
     private val _forecast = MutableLiveData<Forecast>()
     val forecast: LiveData<Forecast> = _forecast
 
-    fun selectCity(city: City) = viewModelScope.launch(Dispatchers.IO) {
+    private val _cities = MutableLiveData<List<String>>(listOf())
+    val cities: LiveData<List<String>> = _cities
+
+    fun getCities(query: String) = viewModelScope.launch(Dispatchers.IO) {
+        val cities = cityRepository.getCities(query)
+        _cities.postValue(cities)
+    }
+
+    fun selectCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
         val result = forecastRepository.getForecast(city)
         _forecast.postValue(result)
     }
 
     init {
-        selectCity(City.SanFrancisco)
+        getCities("").invokeOnCompletion {
+            selectCity((cities.value ?: listOf()).first())
+        }
     }
 }

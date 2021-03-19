@@ -15,8 +15,10 @@
  */
 package com.pp.jetweatherfy.di
 
-import com.pp.jetweatherfy.data.ForecastRepository
-import com.pp.jetweatherfy.data.IForecastRepository
+import com.pp.jetweatherfy.data.city.CityRepository
+import com.pp.jetweatherfy.data.city.ICityRepository
+import com.pp.jetweatherfy.data.forecast.ForecastRepository
+import com.pp.jetweatherfy.data.forecast.IForecastRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -30,4 +32,9 @@ interface RepositoryModule {
     fun bindForecastRepository(
         forecastRepository: ForecastRepository
     ): IForecastRepository
+
+    @Binds
+    fun bindCityRepository(
+        cityRepository: CityRepository
+    ): ICityRepository
 }

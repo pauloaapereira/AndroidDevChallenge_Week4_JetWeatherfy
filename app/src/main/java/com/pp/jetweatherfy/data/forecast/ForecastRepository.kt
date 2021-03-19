@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.data
+package com.pp.jetweatherfy.data.forecast
 
-import com.pp.jetweatherfy.domain.models.City
-import com.pp.jetweatherfy.domain.models.Forecast
+import javax.inject.Inject
 
-interface ForecastDao {
-    suspend fun getForecast(city: City): Forecast
+class ForecastRepository @Inject constructor(private val forecastDao: ForecastDao) :
+    IForecastRepository {
+
+    override suspend fun getForecast(city: String) = forecastDao.generateForecast().also { it.city = city }
+
 }

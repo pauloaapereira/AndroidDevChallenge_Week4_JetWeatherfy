@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.data
+package com.pp.jetweatherfy.data.forecast
 
-import com.pp.jetweatherfy.domain.ForecastController
-import com.pp.jetweatherfy.domain.models.City
+import com.pp.jetweatherfy.domain.models.Forecast
 
-class FakeForecastDao(private val forecastController: ForecastController = ForecastController()) :
-    ForecastDao {
-
-    override suspend fun getForecast(city: City) = getCityForecast(city)
-
-    private fun getCityForecast(city: City) = forecastController.generateForecast(city)
+interface ForecastDao {
+    suspend fun generateForecast(): Forecast
 }

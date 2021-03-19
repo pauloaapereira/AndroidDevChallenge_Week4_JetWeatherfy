@@ -51,7 +51,8 @@ import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
-fun JetWeatherfyTopBar(city: City, onCitySelected: (City) -> Unit) {
+fun JetWeatherfyTopBar(city: String, onCitySelected: (String) -> Unit) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -77,7 +78,7 @@ private fun Title() {
 
 @ExperimentalAnimationApi
 @Composable
-private fun Location(city: City, onCitySelected: (City) -> Unit) {
+private fun Location(city: String, onCitySelected: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -95,7 +96,7 @@ private fun Location(city: City, onCitySelected: (City) -> Unit) {
 
 @ExperimentalAnimationApi
 @Composable
-private fun CitySelection(city: City, onCitySelected: (City) -> Unit) {
+private fun CitySelection(city: String, onCitySelected: (String) -> Unit) {
     val citySelectionScope = rememberCoroutineScope()
     var isCurtainOpened by remember { mutableStateOf(false) }
 
@@ -108,7 +109,7 @@ private fun CitySelection(city: City, onCitySelected: (City) -> Unit) {
         }
     }
 
-    fun selectCity(city: City) {
+    fun selectCity(city: String) {
         if (isCurtainOpened) {
             onCitySelected(city)
             closeCurtain()

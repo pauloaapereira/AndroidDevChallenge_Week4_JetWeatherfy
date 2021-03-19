@@ -50,9 +50,10 @@ class MainActivity : AppCompatActivity() {
 @ExperimentalAnimationApi
 @Composable
 fun JetWeatherfy(forecastViewModel: ForecastViewModel) {
+    val cities by forecastViewModel.cities.observeAsState(listOf())
     val forecast by forecastViewModel.forecast.observeAsState()
 
-    JetWeatherfyScreen(forecast = forecast) { city ->
+    JetWeatherfyScreen(forecast = forecast, cities = cities) { city ->
         forecastViewModel.selectCity(city)
     }
 }

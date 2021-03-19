@@ -15,8 +15,10 @@
  */
 package com.pp.jetweatherfy.di
 
-import com.pp.jetweatherfy.data.FakeForecastDao
-import com.pp.jetweatherfy.data.ForecastDao
+import com.pp.jetweatherfy.data.city.CityDao
+import com.pp.jetweatherfy.data.city.FakeCityDao
+import com.pp.jetweatherfy.data.forecast.FakeForecastDao
+import com.pp.jetweatherfy.data.forecast.ForecastDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +33,11 @@ object DataModule {
     @Provides
     fun provideForecastDao(): ForecastDao {
         return FakeForecastDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCityDao(): CityDao {
+        return FakeCityDao()
     }
 }

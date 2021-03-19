@@ -22,24 +22,20 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.pp.jetweatherfy.domain.models.City
 import com.pp.jetweatherfy.domain.models.Forecast
-import com.pp.jetweatherfy.domain.models.HourlyForecast
 import com.pp.jetweatherfy.utils.setForecastColor
 
 @ExperimentalAnimationApi
 @Composable
-fun JetWeatherfyScreen(forecast: Forecast?, onCitySelected: (City) -> Unit) {
-    var selectedHourlyForecast by remember { mutableStateOf<HourlyForecast?>(null) }
+fun JetWeatherfyScreen(
+    forecast: Forecast?,
+    cities: List<String>,
+    onCitySelected: (String) -> Unit
+) {
+    var selectedHourlyForecast = forecast?.getFirstHourlyForecast()
     val defaultBackgroundColor = MaterialTheme.colors.background
     val defaultContentColor = contentColorFor(defaultBackgroundColor)
-
-    selectedHourlyForecast = forecast?.getFirstHourlyForecast()
 
     Surface(
         modifier = Modifier
@@ -49,7 +45,7 @@ fun JetWeatherfyScreen(forecast: Forecast?, onCitySelected: (City) -> Unit) {
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             JetWeatherfyTopBar(
-                city = forecast?.city ?: City.SanFrancisco,
+                city = forecast?.city ?: "",
                 onCitySelected = { city ->
                     onCitySelected(city)
                 }
