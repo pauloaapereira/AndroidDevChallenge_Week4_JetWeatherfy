@@ -19,10 +19,7 @@ data class Forecast(
     var city: String = "",
     val dailyForecasts: List<DailyForecast> = listOf()
 ) {
-    fun getFirstHourlyForecast(): HourlyForecast? {
-        val a = dailyForecasts.firstOrNull()?.hourlyForecasts?.firstOrNull()
-        println(a)
-        return a
-    }
+    fun getFirstDailyForecast() = dailyForecasts.firstOrNull()
+    fun getFirstHourlyForecast() = dailyForecasts.firstOrNull()?.hourlyForecasts?.firstOrNull()
 }
 

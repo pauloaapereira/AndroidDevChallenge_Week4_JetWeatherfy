@@ -49,4 +49,7 @@ class FakeCityDao : CityDao {
         "Atlanta",
         "Buenos Aires"
     )
+
+    override suspend fun getDefaultCity() = "San Francisco"
+
 }

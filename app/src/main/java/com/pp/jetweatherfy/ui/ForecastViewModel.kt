@@ -21,7 +21,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pp.jetweatherfy.data.city.ICityRepository
 import com.pp.jetweatherfy.data.forecast.IForecastRepository
+import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
+import com.pp.jetweatherfy.domain.models.HourlyForecast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,28 +33,60 @@ import javax.inject.Inject
 class ForecastViewModel @Inject constructor(
     private val forecastRepository: IForecastRepository,
     private val cityRepository: ICityRepository
-) :
-    ViewModel() {
-
-    private val _forecast = MutableLiveData<Forecast>()
-    val forecast: LiveData<Forecast> = _forecast
+) : ViewModel() {
 
     private val _cities = MutableLiveData<List<String>>(listOf())
     val cities: LiveData<List<String>> = _cities
 
-    fun getCities(query: String) = viewModelScope.launch(Dispatchers.IO) {
+    private val _forecast = MutableLiveData<Forecast>()
+    val forecast: LiveData<Forecast> = _forecast
+
+    private val _selectedDailyForecast = MutableLiveData<DailyForecast>()
+    val selectedDailyForecast: LiveData<DailyForecast> = _selectedDailyForecast
+
+    private val _selectedHourlyForecast = MutableLiveData<HourlyForecast>()
+    val selectedHourlyForecast: LiveData<HourlyForecast> = _selectedHourlyForecast
+
+    private val _searchQuery = MutableLiveData<String>()
+    val searchQuery: LiveData<String> = _searchQuery
+
+    fun selectCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
+        _searchQuery.postValue(city)
+        val forecast = forecastRepository.getForecast(city)
+        _forecast.postValue(forecast)
+        _selectedDailyForecast.postValue(forecast.getFirstDailyForecast())
+        _selectedHourlyForecast.postValue(forecast.getFirstHourlyForecast())
+    }
+
+    fun setSelectedDailyForecast(dailyForecast: DailyForecast) {
+        _selectedDailyForecast.value = dailyForecast
+    }
+
+    fun setSelectedHourlyForecast(hourlyForecast: HourlyForecast) {
+        _selectedHourlyForecast.value = hourlyForecast
+    }
+
+    fun search(query: String) = viewModelScope.launch(Dispatchers.IO) {
+        _searchQuery.postValue(query)
         val cities = cityRepository.getCities(query)
         _cities.postValue(cities)
     }
 
-    fun selectCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
-        val result = forecastRepository.getForecast(city)
-        _forecast.postValue(result)
-    }
 
     init {
-        getCities("").invokeOnCompletion {
-            selectCity((cities.value ?: listOf()).first())
-        }
+        loadInitialData()
+    }
+
+    private fun loadInitialData() = viewModelScope.launch(Dispatchers.IO) {
+        val cities = cityRepository.getCities("")
+        _cities.postValue(cities)
+
+        val defaultCity = cityRepository.getDefaultCity()
+        _searchQuery.postValue(defaultCity)
+
+        val forecast = forecastRepository.getForecast(defaultCity)
+        _forecast.postValue(forecast)
+        _selectedDailyForecast.postValue(forecast.getFirstDailyForecast())
+        _selectedHourlyForecast.postValue(forecast.getFirstHourlyForecast())
     }
 }

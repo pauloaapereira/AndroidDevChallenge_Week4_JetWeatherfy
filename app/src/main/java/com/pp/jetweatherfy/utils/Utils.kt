@@ -16,13 +16,15 @@
 package com.pp.jetweatherfy.utils
 
 import androidx.compose.foundation.background
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import com.pp.jetweatherfy.domain.models.HourlyForecast
+import androidx.compose.ui.composed
+import com.pp.jetweatherfy.domain.models.DailyForecast
 
-fun Modifier.setForecastColor(forecast: HourlyForecast?, defaultColor: Color): Modifier {
+fun Modifier.setForecastColor(forecast: DailyForecast?): Modifier = composed {
     forecast?.backgroundColor?.let {
-        return background(it)
+        background(it)
+    } ?: run {
+        background(MaterialTheme.colors.background)
     }
-    return background(defaultColor)
 }

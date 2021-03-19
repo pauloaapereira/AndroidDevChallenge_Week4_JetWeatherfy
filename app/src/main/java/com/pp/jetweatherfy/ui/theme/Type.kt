@@ -49,12 +49,13 @@ val typography = Typography(
         fontFamily = AppFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 72.sp,
-        letterSpacing = 0.sp
+        letterSpacing = (0.1).sp
     ),
     h2 = DefaultTypography.h2.copy(
-        fontFamily = AppFontFamily, fontWeight = FontWeight.Bold,
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
-        letterSpacing = (0.15).sp
+        letterSpacing = (0.1).sp
     ),
     subtitle1 = DefaultTypography.subtitle1.copy(
         fontFamily = AppFontFamily,

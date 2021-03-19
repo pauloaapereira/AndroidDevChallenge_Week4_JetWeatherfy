@@ -37,23 +37,12 @@ class FakeForecastDao : ForecastDao {
     override suspend fun generateForecast() = Forecast(dailyForecasts = generateDailyForecasts())
 
     private fun generateDailyForecasts(): List<DailyForecast> {
-        val today = DateTime.now()
+        val today = DateTime.now().withMinuteOfHour(0)
 
-        return (0..6).map { dayNumber ->
-            val dayStartHour = if (dayNumber == 0) today.hourOfDay else 0
-            val day = today.plusDays(dayNumber).withHourOfDay(dayStartHour)
-
-            DailyForecast(
-                timestamp = day.toString(),
-                hourlyForecasts = generateHourlyForecasts(day)
-            )
-        }
-    }
-
-    private fun generateHourlyForecasts(day: DateTime): List<HourlyForecast> {
         val temperature = Random.nextInt(0, maxTemperature)
         val windSpeed = Random.nextInt(0, maxWindSpeed)
         val precipitation = Random.nextInt(0, maxPrecipitation)
+        val colorFeel = generateColorFeel(temperature, windSpeed, precipitation)
 
         val weather = when {
             temperature > maxTemperature / 2 && precipitation < maxPrecipitation / 2 -> Weather.Sunny
@@ -66,13 +55,14 @@ class FakeForecastDao : ForecastDao {
             else -> Weather.Sunny
         }
 
-        val colorFeel = generateColorFeel(temperature, windSpeed, precipitation)
 
-        return (day.hourOfDay..23).map { hourNumber ->
-            val hour = day.withHourOfDay(hourNumber)
+        return (0..6).map { dayNumber ->
+            val dayStartHour = if (dayNumber == 0) today.hourOfDay else 0
+            val day = today.plusDays(dayNumber).withHourOfDay(dayStartHour)
 
-            HourlyForecast(
-                timestamp = hour.toString(),
+            DailyForecast(
+                timestamp = day.toString(),
+                hourlyForecasts = generateHourlyForecasts(temperature, day),
                 temperature = temperature,
                 precipitationProbability = precipitation,
                 windSpeed = windSpeed,
@@ -83,6 +73,26 @@ class FakeForecastDao : ForecastDao {
                     colorFeel.isDarkColor() -> colorFeel.lightenColor(.3f)
                     else -> Color.Black
                 }
+            )
+        }
+    }
+
+    private fun generateHourlyForecasts(
+        firstTemperature: Int,
+        day: DateTime
+    ): List<HourlyForecast> {
+        val firstHour = day.hourOfDay
+
+        return (firstHour..23).map { hourNumber ->
+            val hour = day.withHourOfDay(hourNumber)
+            val temperature = if (hourNumber == firstHour)
+                firstTemperature
+            else
+                Random.nextInt(0, maxTemperature)
+
+            HourlyForecast(
+                timestamp = hour.toString(),
+                temperature = temperature
             )
         }
     }

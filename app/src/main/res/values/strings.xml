@@ -15,7 +15,7 @@
     <string name="rainy">Rainy</string>
     <string name="thunderstorm">Thuderstorm</string>
     <string name="windy">Windy</string>
-    <string name="choose_city">Choose your city</string>
+    <string name="choose_city">Pick your city</string>
     <string name="location">Location</string>
     <string name="selected">Selected</string>
 </resources>

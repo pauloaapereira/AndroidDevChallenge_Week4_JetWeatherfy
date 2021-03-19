@@ -20,10 +20,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import com.pp.jetweatherfy.ui.components.JetWeatherfyScreen
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import com.pp.jetweatherfy.ui.components.JetWeatherfyContent
+import com.pp.jetweatherfy.ui.components.JetWeatherfySurface
+import com.pp.jetweatherfy.ui.components.JetWeatherfyTopBar
 import com.pp.jetweatherfy.ui.theme.JetWeatherfyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
@@ -33,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<ForecastViewModel>()
 
+    @ExperimentalComposeUiApi
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +54,25 @@ class MainActivity : AppCompatActivity() {
 }
 
 // Start building your app here!
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun JetWeatherfy(forecastViewModel: ForecastViewModel) {
     val cities by forecastViewModel.cities.observeAsState(listOf())
     val forecast by forecastViewModel.forecast.observeAsState()
+    val selectedDailyForecast by forecastViewModel.selectedDailyForecast.observeAsState()
+    val selectedHourlyForecast by forecastViewModel.selectedHourlyForecast.observeAsState()
 
-    JetWeatherfyScreen(forecast = forecast, cities = cities) { city ->
-        forecastViewModel.selectCity(city)
+    JetWeatherfySurface(dailyForecast = selectedDailyForecast) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            JetWeatherfyTopBar(viewModel = forecastViewModel, cities = cities)
+            JetWeatherfyContent(
+                forecast = forecast,
+                selectedDailyForecast = selectedDailyForecast,
+                selectedHourlyForecast = selectedHourlyForecast,
+                onDailyForecastSelected = { forecastViewModel.setSelectedDailyForecast(it) },
+                onHourlyForecastSelected = { forecastViewModel.setSelectedHourlyForecast(it) }
+            )
+        }
     }
 }
