@@ -22,4 +22,3 @@ data class Forecast(
     fun getFirstDailyForecast() = dailyForecasts.firstOrNull()
     fun getFirstHourlyForecast() = dailyForecasts.firstOrNull()?.hourlyForecasts?.firstOrNull()
 }
-

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 Paulo Pereira
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.pp.jetweatherfy.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
@@ -42,7 +57,6 @@ import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 
-
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @Composable
@@ -63,6 +77,9 @@ fun JetWeatherfySearchBar(
     }
 
     fun updateQuery(newQuery: String) {
+        if (query.isBlank() && newQuery.isBlank()) {
+            unFocus()
+        }
         viewModel.search(newQuery)
     }
 
@@ -91,6 +108,13 @@ fun JetWeatherfySearchBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_location),
                     contentDescription = stringResource(id = R.string.choose_city)
+                )
+            },
+            trailingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_clear),
+                    contentDescription = stringResource(R.string.clear),
+                    modifier = Modifier.clickable { updateQuery("") }
                 )
             },
             textStyle = MaterialTheme.typography.body1,

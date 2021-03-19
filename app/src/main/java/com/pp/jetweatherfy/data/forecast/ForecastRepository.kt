@@ -21,5 +21,4 @@ class ForecastRepository @Inject constructor(private val forecastDao: ForecastDa
     IForecastRepository {
 
     override suspend fun getForecast(city: String) = forecastDao.generateForecast().also { it.city = city }
-
 }

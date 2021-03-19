@@ -18,4 +18,5 @@
     <string name="choose_city">Pick your city</string>
     <string name="location">Location</string>
     <string name="selected">Selected</string>
+    <string name="clear">Clear</string>
 </resources>

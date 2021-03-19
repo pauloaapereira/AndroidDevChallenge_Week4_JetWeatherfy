@@ -55,7 +55,6 @@ class FakeForecastDao : ForecastDao {
             else -> Weather.Sunny
         }
 
-
         return (0..6).map { dayNumber ->
             val dayStartHour = if (dayNumber == 0) today.hourOfDay else 0
             val day = today.plusDays(dayNumber).withHourOfDay(dayStartHour)
