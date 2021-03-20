@@ -92,7 +92,7 @@ fun JetWeatherfySearchBar(
 
     Column(
         modifier = modifier
-            .fillMaxWidth(.9f)
+            .fillMaxWidth()
             .animateContentSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -102,7 +102,7 @@ fun JetWeatherfySearchBar(
                 .onFocusChanged { focusState ->
                     isSearching = focusState == Active
                 }
-                .fillMaxWidth(.9f),
+                .fillMaxWidth(),
             value = query,
             onValueChange = { newQuery -> updateQuery(newQuery) },
             label = { Text(text = stringResource(id = R.string.choose_city)) },
@@ -134,7 +134,7 @@ fun JetWeatherfySearchBar(
             LazyColumn(
                 modifier = Modifier
                     .heightIn(min = 0.dp, TextFieldDefaults.MinHeight * 3)
-                    .fillMaxWidth(.9f)
+                    .fillMaxWidth()
                     .border(
                         width = 2.dp,
                         color = MaterialTheme.colors.primary,

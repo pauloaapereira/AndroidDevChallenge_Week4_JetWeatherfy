@@ -32,10 +32,9 @@ import com.pp.jetweatherfy.ui.ForecastViewModel
 @Composable
 fun JetWeatherfySurface(viewModel: ForecastViewModel, content: @Composable () -> Unit) {
     val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
-    val defaultBackgroundColor = MaterialTheme.colors.background
 
     val backgroundColorFeel by animateColorAsState(
-        targetValue = selectedDailyForecast?.generateWeatherColorFeel() ?: defaultBackgroundColor,
+        targetValue = selectedDailyForecast?.generateWeatherColorFeel() ?: MaterialTheme.colors.primary,
         animationSpec = tween(400)
     )
 
@@ -53,6 +52,6 @@ private fun Modifier.setForecastColor(backgroundBrush: Brush? = null): Modifier 
     backgroundBrush?.let {
         background(it)
     } ?: run {
-        background(MaterialTheme.colors.background)
+        background(MaterialTheme.colors.primary)
     }
 }

@@ -27,14 +27,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -48,12 +44,13 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieAnimationSpec
 import com.airbnb.lottie.compose.rememberLottieAnimationState
 import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.ContentState
+import com.pp.jetweatherfy.domain.ContentState.Detailed
+import com.pp.jetweatherfy.domain.ContentState.Simple
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.domain.models.Weather
 import com.pp.jetweatherfy.ui.ForecastViewModel
-import com.pp.jetweatherfy.ui.components.content.ContentState.Detailed
-import com.pp.jetweatherfy.ui.components.content.ContentState.Simple
 import com.pp.jetweatherfy.ui.components.content.detailed.JetWeatherfyDetailedContent
 import com.pp.jetweatherfy.ui.components.content.simple.JetWeatherfySimpleContent
 import com.pp.jetweatherfy.ui.theme.BigDimension
@@ -65,20 +62,15 @@ const val SelectedAlpha = 0.25f
 const val UnselectedAlpha = 0.1f
 const val AnimationDuration = 1000
 
-private enum class ContentState {
-    Simple,
-    Detailed
-}
-
 @ExperimentalAnimationApi
 @Composable
 fun JetWeatherfyContent(viewModel: ForecastViewModel) {
     val forecast by viewModel.forecast.observeAsState()
     val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
     val selectedCity by viewModel.selectedCity.observeAsState("")
+    val contentState by viewModel.contentState.observeAsState(Simple)
 
     val contentTransition = updateTransition(targetState = selectedCity.isNotBlank())
-    var contentState by remember { mutableStateOf(Simple) }
 
     val cityNotSelectedValue by contentTransition.animateFloat(
         transitionSpec = {
@@ -99,11 +91,6 @@ fun JetWeatherfyContent(viewModel: ForecastViewModel) {
             .padding(top = SmallDimension, start = MediumDimension, end = MediumDimension)
             .navigationBarsPadding(left = false, right = false)
     ) {
-        Switch(
-            checked = contentState == Detailed,
-            onCheckedChange = { contentState = if (contentState == Simple) Detailed else Simple }
-        )
-
         Content(
             contentState = contentState,
             viewModel = viewModel,

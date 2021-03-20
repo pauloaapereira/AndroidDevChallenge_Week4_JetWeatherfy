@@ -21,6 +21,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pp.jetweatherfy.data.city.ICityRepository
 import com.pp.jetweatherfy.data.forecast.IForecastRepository
+import com.pp.jetweatherfy.domain.ContentState
+import com.pp.jetweatherfy.domain.ContentState.Simple
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,6 +51,9 @@ class ForecastViewModel @Inject constructor(
     private val _selectedCity = MutableLiveData<String>()
     val selectedCity: LiveData<String> = _selectedCity
 
+    private val _contentState = MutableLiveData(Simple)
+    val contentState: LiveData<ContentState> = _contentState
+
     fun selectCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
         _searchQuery.postValue(city)
         _selectedCity.postValue(city)
@@ -68,5 +73,13 @@ class ForecastViewModel @Inject constructor(
 
         if (query.isBlank())
             _selectedCity.postValue("")
+    }
+
+    fun setContentState(state: ContentState) {
+        _contentState.postValue(state)
+    }
+
+    init {
+        search("")
     }
 }
