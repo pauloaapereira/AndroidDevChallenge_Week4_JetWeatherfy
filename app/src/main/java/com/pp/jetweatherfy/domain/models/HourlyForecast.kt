@@ -20,7 +20,8 @@ import java.util.Locale
 
 data class HourlyForecast(
     val timestamp: String,
-    val temperature: Int
+    val temperature: Int,
+    val weather: Weather
 ) {
 
     private val timestampFormat = "K:mm a"

@@ -23,7 +23,6 @@ import com.pp.jetweatherfy.data.city.ICityRepository
 import com.pp.jetweatherfy.data.forecast.IForecastRepository
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
-import com.pp.jetweatherfy.domain.models.HourlyForecast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -83,6 +82,5 @@ class ForecastViewModel @Inject constructor(
         val forecast = forecastRepository.getForecast(defaultCity)
         _forecast.postValue(forecast)
         _selectedDailyForecast.postValue(forecast.getFirstDailyForecast())
-
     }
 }

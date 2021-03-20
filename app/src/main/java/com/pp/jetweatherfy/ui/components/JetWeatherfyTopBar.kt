@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -38,7 +40,9 @@ import dev.chrisbanes.accompanist.insets.statusBarsPadding
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-fun JetWeatherfyTopBar(viewModel: ForecastViewModel, cities: List<String>) {
+fun JetWeatherfyTopBar(viewModel: ForecastViewModel) {
+    val cities by viewModel.cities.observeAsState(listOf())
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,13 +52,13 @@ fun JetWeatherfyTopBar(viewModel: ForecastViewModel, cities: List<String>) {
         verticalArrangement = Arrangement.spacedBy(BigDimension),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Title()
+        JetWeatherfyTitle()
         JetWeatherfySearchBar(viewModel = viewModel, cities = cities)
     }
 }
 
 @Composable
-private fun Title() {
+private fun JetWeatherfyTitle() {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = stringResource(id = R.string.app_name),

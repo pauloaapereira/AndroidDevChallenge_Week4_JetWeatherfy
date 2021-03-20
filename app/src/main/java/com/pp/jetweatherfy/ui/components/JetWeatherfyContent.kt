@@ -21,12 +21,12 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -34,29 +34,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieAnimationSpec
 import com.airbnb.lottie.compose.rememberLottieAnimationState
 import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.domain.models.DailyForecast
-import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.domain.models.HourlyForecast
 import com.pp.jetweatherfy.domain.models.Weather
 import com.pp.jetweatherfy.ui.ForecastViewModel
@@ -64,15 +69,20 @@ import com.pp.jetweatherfy.ui.theme.BigDimension
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 import com.pp.jetweatherfy.ui.theme.SmallDimension
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import kotlinx.coroutines.launch
+
+private const val SelectedAlpha = 0.25f
+private const val UnselectedAlpha = 0.1f
 
 @Composable
-fun JetWeatherfyContent(
-    viewModel: ForecastViewModel,
-    forecast: Forecast?,
-    selectedDailyForecast: DailyForecast?,
-    onDailyForecastSelected: (DailyForecast) -> Unit
-) {
+fun JetWeatherfyContent(viewModel: ForecastViewModel) {
+    val forecast by viewModel.forecast.observeAsState()
+    val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
     val selectedCity by viewModel.selectedCity.observeAsState("")
+
+    val coroutineScope = rememberCoroutineScope()
+    val dailyForecastsScrollState = rememberLazyListState()
+    val hourlyForecastsScrollState = rememberLazyListState()
 
     val transition = updateTransition(targetState = selectedCity.isNotBlank())
 
@@ -85,26 +95,30 @@ fun JetWeatherfyContent(
         }
     }
 
-    val forecastDaysX by transition.animateDp(transitionSpec = {
-        tween(
-            1000,
-            delayMillis = 100,
-            easing = FastOutSlowInEasing
-        )
-    }) { isCitySelected ->
+    val forecastDaysX by transition.animateDp(
+        transitionSpec = {
+            tween(
+                1000,
+                delayMillis = 100,
+                easing = FastOutSlowInEasing
+            )
+        }
+    ) { isCitySelected ->
         when (isCitySelected) {
             true -> 0.dp
             false -> 400.dp
         }
     }
 
-    val forecastHoursX by transition.animateDp(transitionSpec = {
-        tween(
-            1000,
-            delayMillis = 200,
-            easing = FastOutSlowInEasing
-        )
-    }) { isCitySelected ->
+    val forecastHoursX by transition.animateDp(
+        transitionSpec = {
+            tween(
+                1000,
+                delayMillis = 200,
+                easing = FastOutSlowInEasing
+            )
+        }
+    ) { isCitySelected ->
         when (isCitySelected) {
             true -> 0.dp
             false -> 400.dp
@@ -137,17 +151,23 @@ fun JetWeatherfyContent(
                 modifier = Modifier
                     .padding(top = BigDimension)
                     .offset(x = forecastDaysX),
+                scrollState = dailyForecastsScrollState,
                 selectedDailyForecast = selectedDailyForecast,
                 dailyForecasts = forecast?.dailyForecasts ?: listOf(),
-                surfaceColor = selectedDailyForecast?.contentColor,
-                onDailyForecastSelected = { newSelectedDailyForecast ->
-                    onDailyForecastSelected(newSelectedDailyForecast)
+                surfaceColor = selectedDailyForecast?.generateWeatherColorFeel(),
+                onDailyForecastSelected = { index, newSelectedDailyForecast ->
+                    viewModel.setSelectedDailyForecast(newSelectedDailyForecast)
+                    coroutineScope.launch {
+                        dailyForecastsScrollState.animateScrollToItem(index)
+                        hourlyForecastsScrollState.animateScrollToItem(0)
+                    }
                 }
             )
             ForecastHours(
                 modifier = Modifier.offset(x = forecastHoursX),
+                scrollState = hourlyForecastsScrollState,
                 hourlyForecasts = selectedDailyForecast?.hourlyForecasts ?: listOf(),
-                surfaceColor = selectedDailyForecast?.contentColor,
+                surfaceColor = selectedDailyForecast?.generateWeatherColorFeel()
             )
         }
         Text(
@@ -215,44 +235,52 @@ private fun ForecastDetails(modifier: Modifier = Modifier, selectedDailyForecast
 }
 
 @Composable
-private fun ForecastDetailsAnimation(weather: Weather) {
+private fun ForecastDetailsAnimation(weather: Weather, animationSize: Dp? = null) {
     val animationSpec = LottieAnimationSpec.RawRes(weather.animation)
     val animationState =
         rememberLottieAnimationState(autoPlay = true, repeatCount = Integer.MAX_VALUE)
-    val animationSize = 200.dp
 
-    Box(modifier = Modifier.requiredSize(animationSize)) {
+    Box(modifier = Modifier.weatherAnimation(animationSize)) {
         LottieAnimation(
             animationSpec,
-            modifier = Modifier.requiredSize(animationSize),
+            modifier = Modifier.fillMaxSize(),
             animationState
         )
     }
 }
 
-private const val SelectedAlpha = 0.2f
-private const val UnselectedAlpha = 0.08f
+private fun Modifier.weatherAnimation(size: Dp? = null): Modifier = composed {
+    size?.let {
+        requiredSize(it)
+    } ?: run {
+        fillMaxHeight(.3f)
+    }
+}
 
 @Composable
 private fun ForecastDays(
     modifier: Modifier = Modifier,
+    scrollState: LazyListState,
     selectedDailyForecast: DailyForecast?,
     dailyForecasts: List<DailyForecast>,
     surfaceColor: Color?,
-    onDailyForecastSelected: (DailyForecast) -> Unit
+    onDailyForecastSelected: (Int, DailyForecast) -> Unit
 ) {
     LazyRow(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(BigDimension)
+        horizontalArrangement = Arrangement.spacedBy(BigDimension),
+        state = scrollState
     ) {
-        items(dailyForecasts) { dailyForecast ->
+        itemsIndexed(dailyForecasts) { index, dailyForecast ->
             val isSelectedAlpha =
                 if (dailyForecast == selectedDailyForecast) SelectedAlpha else UnselectedAlpha
             ForecastDaysItem(
-                surfaceColor = (surfaceColor
-                    ?: MaterialTheme.colors.primary).copy(alpha = isSelectedAlpha),
+                surfaceColor = (
+                    surfaceColor
+                        ?: MaterialTheme.colors.primary
+                    ).copy(alpha = isSelectedAlpha),
                 dailyForecast = dailyForecast,
-                onDailyForecastSelected = { onDailyForecastSelected(dailyForecast) }
+                onDailyForecastSelected = { onDailyForecastSelected(index, dailyForecast) }
             )
         }
     }
@@ -279,18 +307,23 @@ private fun ForecastDaysItem(
 @Composable
 private fun ForecastHours(
     modifier: Modifier = Modifier,
+    scrollState: LazyListState,
     hourlyForecasts: List<HourlyForecast>,
     surfaceColor: Color?
 ) {
     LazyRow(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(MediumDimension)
+        horizontalArrangement = Arrangement.spacedBy(MediumDimension),
+        state = scrollState
     ) {
         items(hourlyForecasts) { hourlyForecast ->
             ForecastHoursItem(
-                surfaceColor = (surfaceColor
-                    ?: MaterialTheme.colors.primary).copy(alpha = UnselectedAlpha),
-                hourlyForecast = hourlyForecast
+                surfaceColor = (
+                    surfaceColor
+                        ?: MaterialTheme.colors.primary
+                    ).copy(alpha = UnselectedAlpha),
+                hourlyForecast = hourlyForecast,
+                weather = hourlyForecast.weather
             )
         }
     }
@@ -299,7 +332,8 @@ private fun ForecastHours(
 @Composable
 private fun ForecastHoursItem(
     surfaceColor: Color,
-    hourlyForecast: HourlyForecast
+    hourlyForecast: HourlyForecast,
+    weather: Weather?
 ) {
     Column(
         modifier = Modifier
@@ -310,6 +344,9 @@ private fun ForecastHoursItem(
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = hourlyForecast.formattedTimestamp, style = MaterialTheme.typography.subtitle2)
+        weather?.let {
+            ForecastDetailsAnimation(weather = it, animationSize = 30.dp)
+        }
         Text(text = "${hourlyForecast.temperature}º", style = MaterialTheme.typography.h2)
     }
 }

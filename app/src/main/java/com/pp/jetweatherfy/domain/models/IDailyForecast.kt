@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.utils
+package com.pp.jetweatherfy.domain.models
 
-import androidx.compose.foundation.background
-import androidx.compose.material.MaterialTheme
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import com.pp.jetweatherfy.domain.models.DailyForecast
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 
-fun Modifier.setForecastColor(forecast: DailyForecast?): Modifier = composed {
-    forecast?.backgroundColor?.let {
-        background(it)
-    } ?: run {
-        background(MaterialTheme.colors.background)
-    }
+interface IDailyForecast {
+    fun generateWeatherColorFeel(): Color
+    fun generateWeatherGradientFeel(baseColor: Color): Brush
+    fun generateWeatherContentColor(colorFeel: Color): Color
 }

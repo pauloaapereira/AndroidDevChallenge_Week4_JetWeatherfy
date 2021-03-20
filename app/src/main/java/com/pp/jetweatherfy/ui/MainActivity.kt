@@ -23,8 +23,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import com.pp.jetweatherfy.ui.components.JetWeatherfyContent
@@ -58,19 +56,10 @@ class MainActivity : AppCompatActivity() {
 @ExperimentalAnimationApi
 @Composable
 fun JetWeatherfy(forecastViewModel: ForecastViewModel) {
-    val cities by forecastViewModel.cities.observeAsState(listOf())
-    val forecast by forecastViewModel.forecast.observeAsState()
-    val selectedDailyForecast by forecastViewModel.selectedDailyForecast.observeAsState()
-
-    JetWeatherfySurface(dailyForecast = selectedDailyForecast) {
+    JetWeatherfySurface(viewModel = forecastViewModel) {
         Column(modifier = Modifier.fillMaxSize()) {
-            JetWeatherfyTopBar(viewModel = forecastViewModel, cities = cities)
-            JetWeatherfyContent(
-                viewModel = forecastViewModel,
-                forecast = forecast,
-                selectedDailyForecast = selectedDailyForecast,
-                onDailyForecastSelected = { forecastViewModel.setSelectedDailyForecast(it) }
-            )
+            JetWeatherfyTopBar(viewModel = forecastViewModel)
+            JetWeatherfyContent(viewModel = forecastViewModel)
         }
     }
 }
