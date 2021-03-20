@@ -19,4 +19,6 @@
     <string name="location">Location</string>
     <string name="selected">Selected</string>
     <string name="clear">Clear</string>
+    <string name="wind">Wind Speed</string>
+    <string name="precipitation_probability">Precipitation Probability</string>
 </resources>

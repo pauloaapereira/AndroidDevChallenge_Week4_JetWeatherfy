@@ -44,32 +44,31 @@ class ForecastViewModel @Inject constructor(
     private val _selectedDailyForecast = MutableLiveData<DailyForecast>()
     val selectedDailyForecast: LiveData<DailyForecast> = _selectedDailyForecast
 
-    private val _selectedHourlyForecast = MutableLiveData<HourlyForecast>()
-    val selectedHourlyForecast: LiveData<HourlyForecast> = _selectedHourlyForecast
-
     private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> = _searchQuery
 
+    private val _selectedCity = MutableLiveData<String>()
+    val selectedCity: LiveData<String> = _selectedCity
+
     fun selectCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
         _searchQuery.postValue(city)
+        _selectedCity.postValue(city)
         val forecast = forecastRepository.getForecast(city)
         _forecast.postValue(forecast)
         _selectedDailyForecast.postValue(forecast.getFirstDailyForecast())
-        _selectedHourlyForecast.postValue(forecast.getFirstHourlyForecast())
     }
 
     fun setSelectedDailyForecast(dailyForecast: DailyForecast) {
         _selectedDailyForecast.value = dailyForecast
     }
 
-    fun setSelectedHourlyForecast(hourlyForecast: HourlyForecast) {
-        _selectedHourlyForecast.value = hourlyForecast
-    }
-
     fun search(query: String) = viewModelScope.launch(Dispatchers.IO) {
         _searchQuery.postValue(query)
         val cities = cityRepository.getCities(query)
         _cities.postValue(cities)
+
+        if (query.isBlank())
+            _selectedCity.postValue("")
     }
 
     init {
@@ -79,10 +78,11 @@ class ForecastViewModel @Inject constructor(
     private fun loadInitialData() = viewModelScope.launch(Dispatchers.IO) {
         val defaultCity = cityRepository.getDefaultCity()
         search(defaultCity)
+        _selectedCity.postValue(defaultCity)
 
         val forecast = forecastRepository.getForecast(defaultCity)
         _forecast.postValue(forecast)
         _selectedDailyForecast.postValue(forecast.getFirstDailyForecast())
-        _selectedHourlyForecast.postValue(forecast.getFirstHourlyForecast())
+
     }
 }

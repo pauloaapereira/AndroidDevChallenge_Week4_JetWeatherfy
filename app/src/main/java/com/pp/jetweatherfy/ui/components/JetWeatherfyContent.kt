@@ -15,14 +15,23 @@
  */
 package com.pp.jetweatherfy.ui.components
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
@@ -31,12 +40,16 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieAnimationSpec
@@ -45,58 +58,119 @@ import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.domain.models.HourlyForecast
+import com.pp.jetweatherfy.domain.models.Weather
+import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.theme.BigDimension
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 import com.pp.jetweatherfy.ui.theme.SmallDimension
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun JetWeatherfyContent(
+    viewModel: ForecastViewModel,
     forecast: Forecast?,
     selectedDailyForecast: DailyForecast?,
-    selectedHourlyForecast: HourlyForecast?,
-    onDailyForecastSelected: (DailyForecast) -> Unit,
-    onHourlyForecastSelected: (HourlyForecast) -> Unit
+    onDailyForecastSelected: (DailyForecast) -> Unit
 ) {
-    Column(
+    val selectedCity by viewModel.selectedCity.observeAsState("")
+
+    val transition = updateTransition(targetState = selectedCity.isNotBlank())
+
+    val forecastDetailsX by transition.animateDp(
+        transitionSpec = { tween(1000, easing = FastOutSlowInEasing) }
+    ) { isCitySelected ->
+        when (isCitySelected) {
+            true -> 0.dp
+            false -> 400.dp
+        }
+    }
+
+    val forecastDaysX by transition.animateDp(transitionSpec = {
+        tween(
+            1000,
+            delayMillis = 100,
+            easing = FastOutSlowInEasing
+        )
+    }) { isCitySelected ->
+        when (isCitySelected) {
+            true -> 0.dp
+            false -> 400.dp
+        }
+    }
+
+    val forecastHoursX by transition.animateDp(transitionSpec = {
+        tween(
+            1000,
+            delayMillis = 200,
+            easing = FastOutSlowInEasing
+        )
+    }) { isCitySelected ->
+        when (isCitySelected) {
+            true -> 0.dp
+            false -> 400.dp
+        }
+    }
+
+    val cityNotSelectedScale by transition.animateFloat(transitionSpec = { tween(1000) }) { isCitySelected ->
+        when (isCitySelected) {
+            true -> 0f
+            false -> 1f
+        }
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(MediumDimension)
+            .padding(top = SmallDimension, start = MediumDimension, end = MediumDimension)
+            .navigationBarsPadding(left = false, right = false)
     ) {
-        WeatherDetails(selectedDailyForecast)
-        ForecastDays(
-            modifier = Modifier.padding(top = BigDimension),
-            dailyForecasts = forecast?.dailyForecasts ?: listOf()
-        )
-        ForecastHours(
-            hourlyForecasts = selectedDailyForecast?.hourlyForecasts ?: listOf(),
-            surfaceColor = selectedDailyForecast?.contentColor
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(MediumDimension)
+        ) {
+            ForecastDetails(
+                modifier = Modifier.offset(x = forecastDetailsX),
+                selectedDailyForecast = selectedDailyForecast
+            )
+            ForecastDays(
+                modifier = Modifier
+                    .padding(top = BigDimension)
+                    .offset(x = forecastDaysX),
+                selectedDailyForecast = selectedDailyForecast,
+                dailyForecasts = forecast?.dailyForecasts ?: listOf(),
+                surfaceColor = selectedDailyForecast?.contentColor,
+                onDailyForecastSelected = { newSelectedDailyForecast ->
+                    onDailyForecastSelected(newSelectedDailyForecast)
+                }
+            )
+            ForecastHours(
+                modifier = Modifier.offset(x = forecastHoursX),
+                hourlyForecasts = selectedDailyForecast?.hourlyForecasts ?: listOf(),
+                surfaceColor = selectedDailyForecast?.contentColor,
+            )
+        }
+        Text(
+            modifier = Modifier
+                .paddingFromBaseline(top = BigDimension)
+                .scale(cityNotSelectedScale),
+            text = "Hey... You need to select a city to see the forecast \uD83D\uDE06",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.subtitle1
         )
     }
 }
 
 @Composable
-private fun WeatherDetails(selectedDailyForecast: DailyForecast?) {
+private fun ForecastDetails(modifier: Modifier = Modifier, selectedDailyForecast: DailyForecast?) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         selectedDailyForecast?.let { dailyForecast ->
-            val animationSpec = LottieAnimationSpec.RawRes(dailyForecast.weather.animation)
-            val animationState =
-                rememberLottieAnimationState(autoPlay = true, repeatCount = Integer.MAX_VALUE)
-            val animationSize = 200.dp
-
-            Box(modifier = Modifier.requiredSize(animationSize)) {
-                LottieAnimation(
-                    animationSpec,
-                    modifier = Modifier.requiredSize(animationSize),
-                    animationState
-                )
-            }
+            ForecastDetailsAnimation(weather = dailyForecast.weather)
 
             Text(
                 text = stringResource(id = dailyForecast.weather.description),
@@ -113,7 +187,7 @@ private fun WeatherDetails(selectedDailyForecast: DailyForecast?) {
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_wind),
-                        contentDescription = "Wind",
+                        contentDescription = stringResource(R.string.wind),
                         modifier = Modifier.requiredSize(BigDimension)
                     )
                     Text(
@@ -127,7 +201,7 @@ private fun WeatherDetails(selectedDailyForecast: DailyForecast?) {
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_drop),
-                        contentDescription = "drop",
+                        contentDescription = stringResource(R.string.precipitation_probability),
                         modifier = Modifier.requiredSize(BigDimension)
                     )
                     Text(
@@ -136,21 +210,69 @@ private fun WeatherDetails(selectedDailyForecast: DailyForecast?) {
                     )
                 }
             }
-        } ?: run {
-            Text(text = "No data!")
         }
     }
 }
 
 @Composable
-private fun ForecastDays(modifier: Modifier = Modifier, dailyForecasts: List<DailyForecast>) {
+private fun ForecastDetailsAnimation(weather: Weather) {
+    val animationSpec = LottieAnimationSpec.RawRes(weather.animation)
+    val animationState =
+        rememberLottieAnimationState(autoPlay = true, repeatCount = Integer.MAX_VALUE)
+    val animationSize = 200.dp
+
+    Box(modifier = Modifier.requiredSize(animationSize)) {
+        LottieAnimation(
+            animationSpec,
+            modifier = Modifier.requiredSize(animationSize),
+            animationState
+        )
+    }
+}
+
+private const val SelectedAlpha = 0.2f
+private const val UnselectedAlpha = 0.08f
+
+@Composable
+private fun ForecastDays(
+    modifier: Modifier = Modifier,
+    selectedDailyForecast: DailyForecast?,
+    dailyForecasts: List<DailyForecast>,
+    surfaceColor: Color?,
+    onDailyForecastSelected: (DailyForecast) -> Unit
+) {
     LazyRow(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(MediumDimension)
+        horizontalArrangement = Arrangement.spacedBy(BigDimension)
     ) {
         items(dailyForecasts) { dailyForecast ->
-            Text(text = dailyForecast.formattedTimestamp)
+            val isSelectedAlpha =
+                if (dailyForecast == selectedDailyForecast) SelectedAlpha else UnselectedAlpha
+            ForecastDaysItem(
+                surfaceColor = (surfaceColor
+                    ?: MaterialTheme.colors.primary).copy(alpha = isSelectedAlpha),
+                dailyForecast = dailyForecast,
+                onDailyForecastSelected = { onDailyForecastSelected(dailyForecast) }
+            )
         }
+    }
+}
+
+@Composable
+private fun ForecastDaysItem(
+    surfaceColor: Color,
+    dailyForecast: DailyForecast,
+    onDailyForecastSelected: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.medium)
+            .background(surfaceColor)
+            .clickable { onDailyForecastSelected() }
+            .padding(SmallDimension),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = dailyForecast.formattedTimestamp, style = MaterialTheme.typography.subtitle1)
     }
 }
 
@@ -166,7 +288,8 @@ private fun ForecastHours(
     ) {
         items(hourlyForecasts) { hourlyForecast ->
             ForecastHoursItem(
-                surfaceColor = (surfaceColor ?: MaterialTheme.colors.primary).copy(alpha = 0.08f),
+                surfaceColor = (surfaceColor
+                    ?: MaterialTheme.colors.primary).copy(alpha = UnselectedAlpha),
                 hourlyForecast = hourlyForecast
             )
         }
@@ -174,7 +297,10 @@ private fun ForecastHours(
 }
 
 @Composable
-private fun ForecastHoursItem(surfaceColor: Color, hourlyForecast: HourlyForecast) {
+private fun ForecastHoursItem(
+    surfaceColor: Color,
+    hourlyForecast: HourlyForecast
+) {
     Column(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
@@ -183,6 +309,7 @@ private fun ForecastHoursItem(surfaceColor: Color, hourlyForecast: HourlyForecas
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = hourlyForecast.formattedTimestamp, style = MaterialTheme.typography.h2)
+        Text(text = hourlyForecast.formattedTimestamp, style = MaterialTheme.typography.subtitle2)
+        Text(text = "${hourlyForecast.temperature}º", style = MaterialTheme.typography.h2)
     }
 }

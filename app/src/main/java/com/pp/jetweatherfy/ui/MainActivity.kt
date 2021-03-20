@@ -61,17 +61,15 @@ fun JetWeatherfy(forecastViewModel: ForecastViewModel) {
     val cities by forecastViewModel.cities.observeAsState(listOf())
     val forecast by forecastViewModel.forecast.observeAsState()
     val selectedDailyForecast by forecastViewModel.selectedDailyForecast.observeAsState()
-    val selectedHourlyForecast by forecastViewModel.selectedHourlyForecast.observeAsState()
 
     JetWeatherfySurface(dailyForecast = selectedDailyForecast) {
         Column(modifier = Modifier.fillMaxSize()) {
             JetWeatherfyTopBar(viewModel = forecastViewModel, cities = cities)
             JetWeatherfyContent(
+                viewModel = forecastViewModel,
                 forecast = forecast,
                 selectedDailyForecast = selectedDailyForecast,
-                selectedHourlyForecast = selectedHourlyForecast,
-                onDailyForecastSelected = { forecastViewModel.setSelectedDailyForecast(it) },
-                onHourlyForecastSelected = { forecastViewModel.setSelectedHourlyForecast(it) }
+                onDailyForecastSelected = { forecastViewModel.setSelectedDailyForecast(it) }
             )
         }
     }
