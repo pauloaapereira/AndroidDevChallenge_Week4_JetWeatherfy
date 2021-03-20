@@ -21,7 +21,7 @@ import javax.inject.Inject
 class CityRepository @Inject constructor(private val cityDao: CityDao) : ICityRepository {
 
     override suspend fun getCities(query: String) = cityDao.getCities().filter {
-        it.toLowerCase(Locale.getDefault()).contains(query.toLowerCase(Locale.getDefault()))
+        it.toLowerCase(Locale.getDefault()).startsWith(query.toLowerCase(Locale.getDefault()))
     }.sorted()
 
     override suspend fun getDefaultCity() = cityDao.getDefaultCity()

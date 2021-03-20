@@ -69,18 +69,4 @@ class ForecastViewModel @Inject constructor(
         if (query.isBlank())
             _selectedCity.postValue("")
     }
-
-    init {
-        loadInitialData()
-    }
-
-    private fun loadInitialData() = viewModelScope.launch(Dispatchers.IO) {
-        val defaultCity = cityRepository.getDefaultCity()
-        search(defaultCity)
-        _selectedCity.postValue(defaultCity)
-
-        val forecast = forecastRepository.getForecast(defaultCity)
-        _forecast.postValue(forecast)
-        _selectedDailyForecast.postValue(forecast.getFirstDailyForecast())
-    }
 }

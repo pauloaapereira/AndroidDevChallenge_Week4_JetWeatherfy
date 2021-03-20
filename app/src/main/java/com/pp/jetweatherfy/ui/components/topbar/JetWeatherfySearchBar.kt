@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.ui.components
+package com.pp.jetweatherfy.ui.components.topbar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -30,6 +30,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
@@ -118,12 +119,15 @@ fun JetWeatherfySearchBar(
                     modifier = Modifier.clickable { updateQuery("") }
                 )
             },
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.subtitle1,
             singleLine = true,
             keyboardActions = KeyboardActions(onDone = { unFocus() }),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Text
+            ),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedLabelColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high)
             )
         )
         AnimatedVisibility(visible = isSearching) {
@@ -155,6 +159,6 @@ private fun SearchBarItem(text: String, onClick: () -> Unit) {
             .padding(MediumDimension),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = text)
+        Text(text = text, style = MaterialTheme.typography.subtitle2)
     }
 }

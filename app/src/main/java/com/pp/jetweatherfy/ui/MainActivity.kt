@@ -25,9 +25,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import com.pp.jetweatherfy.ui.components.JetWeatherfyContent
 import com.pp.jetweatherfy.ui.components.JetWeatherfySurface
-import com.pp.jetweatherfy.ui.components.JetWeatherfyTopBar
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContent
+import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBar
 import com.pp.jetweatherfy.ui.theme.JetWeatherfyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets

@@ -1,0 +1,208 @@
+/*
+ * Copyright 2021 Paulo Pereira
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.pp.jetweatherfy.ui.components.content
+
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieAnimationSpec
+import com.airbnb.lottie.compose.rememberLottieAnimationState
+import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.models.DailyForecast
+import com.pp.jetweatherfy.domain.models.Forecast
+import com.pp.jetweatherfy.domain.models.Weather
+import com.pp.jetweatherfy.ui.ForecastViewModel
+import com.pp.jetweatherfy.ui.components.content.ContentState.Detailed
+import com.pp.jetweatherfy.ui.components.content.ContentState.Simple
+import com.pp.jetweatherfy.ui.components.content.detailed.JetWeatherfyDetailedContent
+import com.pp.jetweatherfy.ui.components.content.simple.JetWeatherfySimpleContent
+import com.pp.jetweatherfy.ui.theme.BigDimension
+import com.pp.jetweatherfy.ui.theme.MediumDimension
+import com.pp.jetweatherfy.ui.theme.SmallDimension
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+
+const val SelectedAlpha = 0.25f
+const val UnselectedAlpha = 0.1f
+const val AnimationDuration = 1000
+
+private enum class ContentState {
+    Simple,
+    Detailed
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun JetWeatherfyContent(viewModel: ForecastViewModel) {
+    val forecast by viewModel.forecast.observeAsState()
+    val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
+    val selectedCity by viewModel.selectedCity.observeAsState("")
+
+    val contentTransition = updateTransition(targetState = selectedCity.isNotBlank())
+    var contentState by remember { mutableStateOf(Simple) }
+
+    val cityNotSelectedValue by contentTransition.animateFloat(
+        transitionSpec = {
+            tween(
+                AnimationDuration
+            )
+        }
+    ) { isCitySelected ->
+        when (isCitySelected) {
+            true -> 0f
+            false -> 1f
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = SmallDimension, start = MediumDimension, end = MediumDimension)
+            .navigationBarsPadding(left = false, right = false)
+    ) {
+        Switch(
+            checked = contentState == Detailed,
+            onCheckedChange = { contentState = if (contentState == Simple) Detailed else Simple }
+        )
+
+        Content(
+            contentState = contentState,
+            viewModel = viewModel,
+            isCitySelected = selectedCity.isNotBlank(),
+            forecast = forecast,
+            selectedDailyForecast = selectedDailyForecast
+        )
+        NoCitySelected(
+            modifier = Modifier
+                .scale(cityNotSelectedValue)
+                .alpha(cityNotSelectedValue)
+        )
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+private fun Content(
+    contentState: ContentState,
+    viewModel: ForecastViewModel,
+    isCitySelected: Boolean,
+    forecast: Forecast?,
+    selectedDailyForecast: DailyForecast?
+) {
+    val contentStateTransition = updateTransition(targetState = contentState)
+
+    Box(modifier = Modifier.contentTransition(contentStateTransition, Simple)) {
+        JetWeatherfySimpleContent(
+            viewModel = viewModel,
+            isActive = isCitySelected && contentState == Simple,
+            forecast = forecast,
+            selectedDailyForecast = selectedDailyForecast
+        )
+    }
+
+    Box(modifier = Modifier.contentTransition(contentStateTransition, Detailed)) {
+        JetWeatherfyDetailedContent(
+            viewModel = viewModel,
+            isActive = isCitySelected && contentState == Detailed,
+            forecast = forecast,
+            selectedDailyForecast = selectedDailyForecast
+        )
+    }
+}
+
+private fun Modifier.contentTransition(
+    contentStateTransition: Transition<ContentState>,
+    ownState: ContentState
+): Modifier = composed {
+    val transitionValue by contentStateTransition.animateFloat(
+        transitionSpec = {
+            tween(
+                AnimationDuration
+            )
+        }
+    ) { state ->
+        if (state == ownState) 1f else 0f
+    }
+
+    graphicsLayer {
+        alpha = transitionValue
+    }
+}
+
+@Composable
+private fun NoCitySelected(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = BigDimension),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(id = R.string.no_city),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h2
+        )
+    }
+}
+
+@Composable
+fun ForecastDetailsAnimation(weather: Weather, animationSize: Dp? = null) {
+    val animationSpec = LottieAnimationSpec.RawRes(weather.animation)
+    val animationState =
+        rememberLottieAnimationState(autoPlay = true, repeatCount = Integer.MAX_VALUE)
+
+    Box(modifier = Modifier.weatherAnimation(animationSize)) {
+        LottieAnimation(
+            animationSpec,
+            modifier = Modifier.fillMaxSize(),
+            animationState
+        )
+    }
+}
+
+private fun Modifier.weatherAnimation(size: Dp? = null): Modifier = composed {
+    size?.let {
+        requiredSize(it)
+    } ?: run {
+        fillMaxHeight(.25f)
+    }
+}

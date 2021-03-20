@@ -21,7 +21,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,7 +33,6 @@ import com.pp.jetweatherfy.ui.ForecastViewModel
 fun JetWeatherfySurface(viewModel: ForecastViewModel, content: @Composable () -> Unit) {
     val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
     val defaultBackgroundColor = MaterialTheme.colors.background
-    val defaultContentColor = contentColorFor(defaultBackgroundColor)
 
     val backgroundColorFeel by animateColorAsState(
         targetValue = selectedDailyForecast?.generateWeatherColorFeel() ?: defaultBackgroundColor,
