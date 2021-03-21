@@ -54,6 +54,7 @@ import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.domain.models.HourlyForecast
+import com.pp.jetweatherfy.domain.models.getFormattedTime
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.components.content.AnimationDuration
 import com.pp.jetweatherfy.ui.components.content.ForecastDetailsAnimation
@@ -194,7 +195,7 @@ private fun ForecastDaysItem(
         Row(horizontalArrangement = Arrangement.spacedBy(SmallDimension)) {
             ForecastDetailsAnimation(weather = dailyForecast.weather, animationSize = BigDimension)
             Text(
-                text = dailyForecast.formattedTimestamp,
+                text = dailyForecast.getFormattedTime(),
                 style = MaterialTheme.typography.subtitle2
             )
         }
@@ -352,7 +353,7 @@ private fun ForecastDetailsHourlyItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(SmallDimension / 2)
     ) {
-        Text(text = hourlyForecast.formattedTimestamp, style = MaterialTheme.typography.subtitle2)
+        Text(text = hourlyForecast.getFormattedTime(), style = MaterialTheme.typography.subtitle2)
         ForecastDetailsAnimation(weather = hourlyForecast.weather, animationSize = 30.dp)
         Text(text = "${hourlyForecast.temperature}º", style = MaterialTheme.typography.subtitle1)
     }

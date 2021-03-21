@@ -81,13 +81,10 @@ class FakeForecastDao : ForecastDao {
 
     private fun generateWeather(temperature: Int, windSpeed: Int, precipitation: Int) =
         when {
-            temperature > MaxTemperature / 2 && precipitation < MaxPrecipitation / 2 -> Weather.Sunny
-            temperature > 28 -> Weather.Sunny
-            temperature > 21 && precipitation < 50 -> Weather.Sunny
-            precipitation > 50 -> Weather.Rainy
+            precipitation >= 70 && windSpeed >= 10 && temperature > 20 -> Weather.Thunderstorm
+            precipitation >= 50 || precipitation >= 30 && temperature <= 10 -> Weather.Rainy
             precipitation < 15 && temperature > 18 -> Weather.Cloudy
-            precipitation > 60 && windSpeed > 35 -> Weather.Thunderstorm
-            windSpeed > 40 || windSpeed > 20 && temperature < 15 -> Weather.Windy
+            windSpeed > 35 -> Weather.Windy
             else -> Weather.Sunny
         }
 }

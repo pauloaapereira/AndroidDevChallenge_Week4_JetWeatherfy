@@ -15,8 +15,11 @@
  */
 package com.pp.jetweatherfy.domain.models
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.data.forecast.FakeForecastDao.Companion.MaxPrecipitation
 import com.pp.jetweatherfy.data.forecast.FakeForecastDao.Companion.MaxTemperature
 import com.pp.jetweatherfy.data.forecast.FakeForecastDao.Companion.MaxWindSpeed
@@ -34,11 +37,6 @@ data class DailyForecast(
     val windSpeed: Int,
     val weather: Weather
 ) : IDailyForecast {
-
-    private val timestampFormat = "E, d MMM"
-
-    val formattedTimestamp: String
-        get() = DateTime.parse(timestamp).toString(timestampFormat)
 
     override fun generateWeatherColorFeel() =
         Color(
@@ -64,5 +62,20 @@ data class DailyForecast(
             colorFeel.isDarkColor() -> colorFeel.lightenColor(.3f)
             else -> Color.Black
         }
+    }
+}
+
+@Composable
+fun DailyForecast.getFormattedTime(): String {
+    val timestampTime = DateTime.parse(timestamp)
+    val today = DateTime.now()
+    return when {
+        timestampTime.dayOfYear == today.dayOfYear && timestampTime.year == today.year -> stringResource(
+            R.string.today
+        )
+        timestampTime.dayOfYear == today.plusDays(1).dayOfYear && timestampTime.year == today.plusDays(1).year -> stringResource(
+            R.string.tomorrow
+        )
+        else -> timestampTime.toString(Forecast.DailyTimestampFormat)
     }
 }

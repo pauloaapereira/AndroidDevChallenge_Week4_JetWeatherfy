@@ -50,10 +50,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.ContentState.Detailed
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.domain.models.HourlyForecast
 import com.pp.jetweatherfy.domain.models.Weather
+import com.pp.jetweatherfy.domain.models.getFormattedTime
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.components.content.AnimationDuration
 import com.pp.jetweatherfy.ui.components.content.ForecastDetailsAnimation
@@ -138,8 +140,11 @@ fun JetWeatherfySimpleContent(
                 .offset(x = forecastDaysX),
             scrollState = dailyForecastsScrollState,
             selectedDailyForecast = selectedDailyForecast,
-            dailyForecasts = forecast?.dailyForecasts ?: listOf(),
+            dailyForecasts = forecast?.dailyForecasts?.take(2) ?: listOf(),
             surfaceColor = selectedDailyForecast?.generateWeatherColorFeel(),
+            onMoreClick = {
+                viewModel.setContentState(Detailed)
+            },
             onDailyForecastSelected = { index, newSelectedDailyForecast ->
                 viewModel.setSelectedDailyForecast(newSelectedDailyForecast)
                 coroutineScope.launch {
@@ -217,7 +222,8 @@ private fun ForecastDays(
     selectedDailyForecast: DailyForecast?,
     dailyForecasts: List<DailyForecast>,
     surfaceColor: Color?,
-    onDailyForecastSelected: (Int, DailyForecast) -> Unit
+    onMoreClick: () -> Unit,
+    onDailyForecastSelected: (Int, DailyForecast) -> Unit,
 ) {
     LazyRow(
         modifier = modifier.fillMaxWidth(),
@@ -232,8 +238,18 @@ private fun ForecastDays(
                     surfaceColor
                         ?: MaterialTheme.colors.primary
                     ).copy(alpha = isSelectedAlpha),
-                dailyForecast = dailyForecast,
-                onDailyForecastSelected = { onDailyForecastSelected(index, dailyForecast) }
+                text = dailyForecast.getFormattedTime(),
+                onClick = { onDailyForecastSelected(index, dailyForecast) }
+            )
+        }
+        item {
+            ForecastDaysItem(
+                surfaceColor = (
+                    surfaceColor
+                        ?: MaterialTheme.colors.primary
+                    ).copy(alpha = UnselectedAlpha),
+                text = stringResource(R.string.more),
+                onClick = { onMoreClick() }
             )
         }
     }
@@ -242,18 +258,18 @@ private fun ForecastDays(
 @Composable
 private fun ForecastDaysItem(
     surfaceColor: Color,
-    dailyForecast: DailyForecast,
-    onDailyForecastSelected: () -> Unit
+    text: String,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
             .background(surfaceColor)
-            .clickable { onDailyForecastSelected() }
+            .clickable { onClick() }
             .padding(SmallDimension),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = dailyForecast.formattedTimestamp, style = MaterialTheme.typography.subtitle1)
+        Text(text = text, style = MaterialTheme.typography.subtitle1)
     }
 }
 
@@ -296,7 +312,7 @@ private fun ForecastHoursItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = hourlyForecast.formattedTimestamp, style = MaterialTheme.typography.subtitle2)
+        Text(text = hourlyForecast.getFormattedTime(), style = MaterialTheme.typography.subtitle2)
         weather?.let {
             ForecastDetailsAnimation(weather = it, animationSize = 30.dp)
         }

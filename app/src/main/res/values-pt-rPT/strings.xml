@@ -13,4 +13,7 @@
     <string name="wind">Wind Speed</string>
     <string name="precipitation_probability">Precipitation Probability</string>
     <string name="no_city">Choose your city…\n\nMagic might happen!</string>
+    <string name="more">More…</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
 </resources>

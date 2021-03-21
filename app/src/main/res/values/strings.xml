@@ -13,7 +13,7 @@
     <string name="sunny">Sunny</string>
     <string name="cloudy">Cloudy</string>
     <string name="rainy">Rainy</string>
-    <string name="thunderstorm">Thuderstorm</string>
+    <string name="thunderstorm">Thunderstorm</string>
     <string name="windy">Windy</string>
     <string name="choose_city">Pick your city</string>
     <string name="location">Location</string>
@@ -22,4 +22,7 @@
     <string name="wind">Wind Speed</string>
     <string name="precipitation_probability">Precipitation Probability</string>
     <string name="no_city">Choose your city…\n\nMagic might happen!</string>
+    <string name="more">More…</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
 </resources>

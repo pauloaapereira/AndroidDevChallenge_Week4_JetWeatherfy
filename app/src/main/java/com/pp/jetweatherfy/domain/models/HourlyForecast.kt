@@ -23,9 +23,6 @@ data class HourlyForecast(
     val temperature: Int,
     val weather: Weather
 ) {
-
-    private val timestampFormat = "K:mm a"
-
-    val formattedTimestamp: String
-        get() = DateTime.parse(timestamp).toString(timestampFormat).toUpperCase(Locale.getDefault())
+    fun getFormattedTime() = DateTime.parse(timestamp).toString(Forecast.HourlyTimestampFormat)
+        .toUpperCase(Locale.getDefault())
 }

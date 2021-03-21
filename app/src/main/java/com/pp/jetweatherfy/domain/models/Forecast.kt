@@ -19,6 +19,11 @@ data class Forecast(
     var city: String = "",
     val dailyForecasts: List<DailyForecast> = listOf()
 ) {
+
+    companion object {
+        const val DailyTimestampFormat = "E, d MMM"
+        const val HourlyTimestampFormat = "K:mm a"
+    }
+
     fun getFirstDailyForecast() = dailyForecasts.firstOrNull()
-    fun getFirstHourlyForecast() = dailyForecasts.firstOrNull()?.hourlyForecasts?.firstOrNull()
 }

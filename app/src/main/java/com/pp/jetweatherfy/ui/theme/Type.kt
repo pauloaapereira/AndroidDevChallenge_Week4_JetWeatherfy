@@ -63,7 +63,7 @@ val typography = Typography(
         fontSize = 21.sp,
         letterSpacing = 0.sp
     ),
-    subtitle2 = DefaultTypography.subtitle1.copy(
+    subtitle2 = DefaultTypography.subtitle2.copy(
         fontFamily = AppFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
