@@ -20,6 +20,7 @@ import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.domain.models.HourlyForecast
 import com.pp.jetweatherfy.domain.models.Weather
 import org.joda.time.DateTime
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class FakeForecastDao : ForecastDao {
@@ -40,14 +41,23 @@ class FakeForecastDao : ForecastDao {
             val day = today.plusDays(dayNumber).withHourOfDay(dayStartHour)
 
             val temperature = Random.nextInt(0, MaxTemperature)
+            val maxTemperature = (temperature * 1.2f).roundToInt().coerceAtMost(MaxTemperature)
+            val minTemperature = (temperature / 1.2f).roundToInt().coerceAtLeast(0)
             val windSpeed = Random.nextInt(0, MaxWindSpeed)
             val precipitation = Random.nextInt(0, MaxPrecipitation)
             val weather = generateWeather(temperature, windSpeed, precipitation)
 
             DailyForecast(
                 timestamp = day.toString(),
-                hourlyForecasts = generateHourlyForecasts(temperature, day),
+                hourlyForecasts = generateHourlyForecasts(
+                    temperature,
+                    maxTemperature,
+                    minTemperature,
+                    day
+                ),
                 temperature = temperature,
+                minTemperature = minTemperature,
+                maxTemperature = maxTemperature,
                 precipitationProbability = precipitation,
                 windSpeed = windSpeed,
                 weather = weather
@@ -57,16 +67,22 @@ class FakeForecastDao : ForecastDao {
 
     private fun generateHourlyForecasts(
         firstTemperature: Int,
+        maxTemperature: Int,
+        minTemperature: Int,
         day: DateTime
     ): List<HourlyForecast> {
         val firstHour = day.hourOfDay
 
         return (firstHour..23).map { hourNumber ->
             val hour = day.withHourOfDay(hourNumber)
-            val temperature = if (hourNumber == firstHour)
-                firstTemperature
-            else
-                Random.nextInt(0, MaxTemperature)
+            val temperature = when {
+                hourNumber == firstHour -> firstTemperature
+                minTemperature == maxTemperature -> minTemperature
+                else -> Random.nextInt(
+                    minTemperature,
+                    maxTemperature
+                )
+            }
             val windSpeed = Random.nextInt(0, MaxWindSpeed)
             val precipitation = Random.nextInt(0, MaxPrecipitation)
             val weather = generateWeather(temperature, windSpeed, precipitation)

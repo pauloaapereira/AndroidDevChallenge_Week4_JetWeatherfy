@@ -33,6 +33,8 @@ data class DailyForecast(
     val timestamp: String,
     val hourlyForecasts: List<HourlyForecast> = listOf(),
     val temperature: Int,
+    val minTemperature: Int,
+    val maxTemperature: Int,
     val precipitationProbability: Int,
     val windSpeed: Int,
     val weather: Weather
@@ -73,7 +75,9 @@ fun DailyForecast.getFormattedTime(): String {
         timestampTime.dayOfYear == today.dayOfYear && timestampTime.year == today.year -> stringResource(
             R.string.today
         )
-        timestampTime.dayOfYear == today.plusDays(1).dayOfYear && timestampTime.year == today.plusDays(1).year -> stringResource(
+        timestampTime.dayOfYear == today.plusDays(1).dayOfYear && timestampTime.year == today.plusDays(
+            1
+        ).year -> stringResource(
             R.string.tomorrow
         )
         else -> timestampTime.toString(Forecast.DailyTimestampFormat)

@@ -21,11 +21,14 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +40,12 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieAnimationSpec
 import com.airbnb.lottie.compose.rememberLottieAnimationState
@@ -191,5 +197,48 @@ private fun Modifier.weatherAnimation(size: Dp? = null): Modifier = composed {
         requiredSize(it)
     } ?: run {
         fillMaxHeight(.25f)
+    }
+}
+
+@Composable
+fun Temperature(
+    temperature: Int,
+    maxTemperature: Int? = null,
+    minTemperature: Int? = null,
+    celsius: Boolean = true,
+    alignment: Alignment.Vertical = Alignment.CenterVertically,
+    temperatureStyle: TextStyle = MaterialTheme.typography.h1,
+    maxAndMinStyle: TextStyle = MaterialTheme.typography.subtitle2
+) {
+    val type = if (celsius) "º" else "ºF"
+    Row(verticalAlignment = alignment) {
+        Text(
+            text = "$temperature$type",
+            style = temperatureStyle
+        )
+        Column(modifier = Modifier.padding(top = 1.dp)) {
+            if (maxTemperature != null && minTemperature != null) {
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_up),
+                        contentDescription = "Max Temperature"
+                    )
+                    Text(
+                        text = "$maxTemperature$type",
+                        style = maxAndMinStyle
+                    )
+                }
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_down),
+                        contentDescription = "Min Temperature"
+                    )
+                    Text(
+                        text = "$minTemperature$type",
+                        style = maxAndMinStyle
+                    )
+                }
+            }
+        }
     }
 }

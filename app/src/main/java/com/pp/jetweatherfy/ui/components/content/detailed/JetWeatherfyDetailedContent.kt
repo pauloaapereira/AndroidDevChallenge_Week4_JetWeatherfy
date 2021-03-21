@@ -58,10 +58,12 @@ import com.pp.jetweatherfy.domain.models.getFormattedTime
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.components.content.AnimationDuration
 import com.pp.jetweatherfy.ui.components.content.ForecastDetailsAnimation
+import com.pp.jetweatherfy.ui.components.content.Temperature
 import com.pp.jetweatherfy.ui.components.content.UnselectedAlpha
 import com.pp.jetweatherfy.ui.theme.BigDimension
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 import com.pp.jetweatherfy.ui.theme.SmallDimension
+import com.pp.jetweatherfy.utils.scrollToBegin
 import kotlinx.coroutines.launch
 
 private val AnimationStartOffset = (-400).dp
@@ -78,6 +80,11 @@ fun JetWeatherfyDetailedContent(
     val transition = updateTransition(targetState = isActive)
     val dailyForecastsScrollState = rememberLazyListState()
     val hourlyForecastsScrollState = rememberLazyListState()
+
+    if (!isActive) {
+        dailyForecastsScrollState.scrollToBegin(coroutineScope)
+        hourlyForecastsScrollState.scrollToBegin(coroutineScope)
+    }
 
     val forecastDetailsX by transition.animateDp(
         transitionSpec = {
@@ -233,9 +240,14 @@ private fun ForecastDaysItem(
                 )
             }
         }
-        Text(
-            text = "${dailyForecast.temperature}º",
-            style = MaterialTheme.typography.subtitle2
+
+        Temperature(
+            temperature = dailyForecast.temperature,
+            minTemperature = dailyForecast.minTemperature,
+            maxTemperature = dailyForecast.maxTemperature,
+            temperatureStyle = MaterialTheme.typography.subtitle2,
+            maxAndMinStyle = MaterialTheme.typography.body2,
+            alignment = Alignment.Top
         )
     }
 }
@@ -284,13 +296,18 @@ private fun ForecastDetailsDaily(dailyForecast: DailyForecast) {
                 weather = dailyForecast.weather,
                 animationSize = BigDimension * 3
             )
-            Text(
-                text = "${dailyForecast.temperature}º",
-                style = MaterialTheme.typography.h2
+
+            Temperature(
+                temperature = dailyForecast.temperature,
+                minTemperature = dailyForecast.minTemperature,
+                maxTemperature = dailyForecast.maxTemperature,
+                temperatureStyle = MaterialTheme.typography.h2,
+                maxAndMinStyle = MaterialTheme.typography.body2,
+                alignment = Alignment.Top
             )
         }
         Column(
-            horizontalAlignment = Alignment.Start,
+            horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(SmallDimension)
         ) {
             Text(

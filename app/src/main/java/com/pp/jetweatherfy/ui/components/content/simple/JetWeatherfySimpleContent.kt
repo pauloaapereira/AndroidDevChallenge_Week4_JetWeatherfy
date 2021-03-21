@@ -60,10 +60,12 @@ import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.components.content.AnimationDuration
 import com.pp.jetweatherfy.ui.components.content.ForecastDetailsAnimation
 import com.pp.jetweatherfy.ui.components.content.SelectedAlpha
+import com.pp.jetweatherfy.ui.components.content.Temperature
 import com.pp.jetweatherfy.ui.components.content.UnselectedAlpha
 import com.pp.jetweatherfy.ui.theme.BigDimension
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 import com.pp.jetweatherfy.ui.theme.SmallDimension
+import com.pp.jetweatherfy.utils.scrollToBegin
 import kotlinx.coroutines.launch
 
 private val AnimationStartOffset = 400.dp
@@ -80,6 +82,11 @@ fun JetWeatherfySimpleContent(
     val dailyForecastsScrollState = rememberLazyListState()
     val hourlyForecastsScrollState = rememberLazyListState()
     val transition = updateTransition(targetState = isActive)
+
+    if (!isActive) {
+        dailyForecastsScrollState.scrollToBegin(coroutineScope)
+        hourlyForecastsScrollState.scrollToBegin(coroutineScope)
+    }
 
     val forecastDetailsX by transition.animateDp(
         transitionSpec = {
@@ -177,7 +184,11 @@ private fun ForecastDetails(modifier: Modifier = Modifier, selectedDailyForecast
                 text = stringResource(id = dailyForecast.weather.description),
                 style = MaterialTheme.typography.subtitle1
             )
-            Text(text = "${dailyForecast.temperature}º", style = MaterialTheme.typography.h1)
+            Temperature(
+                temperature = dailyForecast.temperature,
+                minTemperature = dailyForecast.minTemperature,
+                maxTemperature = dailyForecast.maxTemperature
+            )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(MediumDimension),
                 verticalAlignment = Alignment.CenterVertically
