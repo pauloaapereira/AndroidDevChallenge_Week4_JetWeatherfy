@@ -20,14 +20,14 @@
     <application
         android:name=".JetWeatherfyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AndroidDevChallenge">
+        android:theme="@style/Theme.JetWeatherfy">
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AndroidDevChallenge.NoActionBar"
+            android:theme="@style/Theme.JetWeatherfy.NoActionBar"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>

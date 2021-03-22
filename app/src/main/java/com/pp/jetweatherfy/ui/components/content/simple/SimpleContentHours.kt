@@ -31,9 +31,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.domain.models.HourlyForecast
 import com.pp.jetweatherfy.ui.components.content.UnselectedAlpha
 import com.pp.jetweatherfy.ui.components.utils.WeatherAnimation
+import com.pp.jetweatherfy.ui.components.utils.WeatherTemperature
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 
 @Composable
@@ -41,7 +43,8 @@ fun SimpleContentHours(
     modifier: Modifier = Modifier,
     scrollState: LazyListState,
     hourlyForecasts: List<HourlyForecast>,
-    surfaceColor: Color?
+    surfaceColor: Color?,
+    weatherUnit: WeatherUnit
 ) {
     val backgroundColor = (surfaceColor ?: MaterialTheme.colors.primary).copy(alpha = UnselectedAlpha)
 
@@ -53,7 +56,8 @@ fun SimpleContentHours(
         items(hourlyForecasts) { hourlyForecast ->
             Hour(
                 surfaceColor = backgroundColor,
-                hourlyForecast = hourlyForecast
+                hourlyForecast = hourlyForecast,
+                weatherUnit = weatherUnit
             )
         }
     }
@@ -62,7 +66,8 @@ fun SimpleContentHours(
 @Composable
 private fun Hour(
     surfaceColor: Color,
-    hourlyForecast: HourlyForecast
+    hourlyForecast: HourlyForecast,
+    weatherUnit: WeatherUnit
 ) {
     Column(
         modifier = Modifier
@@ -74,6 +79,11 @@ private fun Hour(
     ) {
         Text(text = hourlyForecast.getFormattedTime(), style = MaterialTheme.typography.subtitle2)
         WeatherAnimation(weather = hourlyForecast.weather, animationSize = 30.dp)
-        Text(text = "${hourlyForecast.temperature}º", style = MaterialTheme.typography.h2)
+        WeatherTemperature(
+            temperature = hourlyForecast.temperature,
+            temperatureStyle = MaterialTheme.typography.h2,
+            weatherUnit = weatherUnit,
+            compressUnitOnAverageTemp = false
+        )
     }
 }

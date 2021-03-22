@@ -15,9 +15,12 @@
  */
 package com.pp.jetweatherfy.ui.components.topbar
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,14 +31,20 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.domain.ContentState
 import com.pp.jetweatherfy.domain.ContentState.Detailed
@@ -43,7 +52,11 @@ import com.pp.jetweatherfy.domain.ContentState.Simple
 import com.pp.jetweatherfy.domain.JetWeatherfyState
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
+import com.pp.jetweatherfy.domain.WeatherUnit
+import com.pp.jetweatherfy.domain.WeatherUnit.IMPERIAL
+import com.pp.jetweatherfy.domain.WeatherUnit.METRIC
 import com.pp.jetweatherfy.ui.ForecastViewModel
+import com.pp.jetweatherfy.ui.components.content.AnimationDuration
 import com.pp.jetweatherfy.ui.theme.BigDimension
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 import com.pp.jetweatherfy.ui.theme.SmallDimension
@@ -56,6 +69,7 @@ fun JetWeatherfyTopBar(
     viewModel: ForecastViewModel,
     state: JetWeatherfyState,
     contentState: ContentState,
+    weatherUnit: WeatherUnit,
     onSetMyLocationClick: () -> Unit
 ) {
     val cities by viewModel.cities.observeAsState(listOf())
@@ -73,6 +87,7 @@ fun JetWeatherfyTopBar(
             viewModel = viewModel,
             state = state,
             contentState = contentState,
+            weatherUnit = weatherUnit,
             onSetMyLocationClick = onSetMyLocationClick
         )
         JetWeatherfySearchBar(viewModel = viewModel, cities = cities, state = state)
@@ -85,6 +100,7 @@ private fun LogoBar(
     viewModel: ForecastViewModel,
     state: JetWeatherfyState,
     contentState: ContentState,
+    weatherUnit: WeatherUnit,
     onSetMyLocationClick: () -> Unit
 ) {
     Row(
@@ -94,35 +110,78 @@ private fun LogoBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = stringResource(id = R.string.app_name),
-            modifier = Modifier.requiredSize(BigDimension * 2)
+        Text(
+            text = stringResource(id = R.string.app_name),
+            style = MaterialTheme.typography.subtitle1
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(SmallDimension),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = SmallDimension)
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            AnimatedVisibility(visible = state == Running) {
-                ViewTypeToggle(viewModel = viewModel, contentState = contentState)
-            }
-            AnimatedVisibility(visible = state == Running || state == Idle) {
-                MyLocationButton(onSetMyLocationClick = onSetMyLocationClick)
-            }
+            WeatherUnitToggle(
+                viewModel = viewModel,
+                isActive = state == Running,
+                weatherUnit = weatherUnit
+            )
+            ViewTypeToggle(
+                viewModel = viewModel,
+                isActive = state == Running,
+                contentState = contentState
+            )
+            MyLocationButton(
+                isActive = state == Running || state == Idle,
+                onSetMyLocationClick = onSetMyLocationClick
+            )
         }
     }
 }
 
 @Composable
-private fun ViewTypeToggle(viewModel: ForecastViewModel, contentState: ContentState) {
+private fun WeatherUnitToggle(
+    viewModel: ForecastViewModel,
+    isActive: Boolean,
+    weatherUnit: WeatherUnit
+) {
+    val buttonTransition = updateTransition(targetState = isActive)
+    val buttonAlpha by topBarButtonTransition(transition = buttonTransition)
+
+    IconButton(
+        modifier = Modifier
+            .alpha(buttonAlpha)
+            .semantics { testTag = "MyLocationButton" },
+        onClick = { viewModel.setWeatherUnit(if (weatherUnit == METRIC) IMPERIAL else METRIC) },
+        enabled = isActive
+    ) {
+        Icon(
+            painter = painterResource(id = if (weatherUnit == METRIC) R.drawable.centigrade else R.drawable.fahrenheit),
+            contentDescription = stringResource(R.string.get_my_location),
+            modifier = Modifier.requiredSize(
+                BigDimension
+            )
+        )
+    }
+}
+
+@Composable
+private fun ViewTypeToggle(
+    viewModel: ForecastViewModel,
+    isActive: Boolean,
+    contentState: ContentState
+) {
+    val buttonTransition = updateTransition(targetState = isActive)
+    val buttonAlpha by topBarButtonTransition(transition = buttonTransition)
+
     IconToggleButton(
+        modifier = Modifier
+            .alpha(buttonAlpha)
+            .semantics { testTag = "ViewTypeToggle" },
         checked = contentState == Detailed,
         onCheckedChange = {
             viewModel.setContentState(
                 if (contentState == Simple) Detailed else Simple
             )
-        }
+        },
+        enabled = isActive
     ) {
         val icon =
             if (contentState == Detailed) R.drawable.ic_list else R.drawable.detailed_view
@@ -137,13 +196,39 @@ private fun ViewTypeToggle(viewModel: ForecastViewModel, contentState: ContentSt
 }
 
 @Composable
-fun MyLocationButton(onSetMyLocationClick: () -> Unit) {
+fun MyLocationButton(isActive: Boolean, onSetMyLocationClick: () -> Unit) {
+    val buttonTransition = updateTransition(targetState = isActive)
+    val buttonAlpha by topBarButtonTransition(transition = buttonTransition)
+
     IconButton(
-        onClick = { onSetMyLocationClick() }
+        modifier = Modifier
+            .alpha(buttonAlpha)
+            .semantics { testTag = "MyLocationButton" },
+        onClick = { onSetMyLocationClick() },
+        enabled = isActive
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_my_location),
             contentDescription = stringResource(R.string.get_my_location)
         )
+    }
+}
+
+@Composable
+fun topBarButtonTransition(
+    transition: Transition<Boolean>
+): State<Float> {
+    return transition.animateFloat(
+        transitionSpec = {
+            tween(
+                AnimationDuration / 4,
+                easing = FastOutSlowInEasing
+            )
+        }
+    ) { isActive ->
+        when (isActive) {
+            true -> 1f
+            false -> 0f
+        }
     }
 }

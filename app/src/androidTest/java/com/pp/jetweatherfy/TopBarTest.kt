@@ -18,66 +18,45 @@ package com.pp.jetweatherfy
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import com.pp.jetweatherfy.data.city.ICityRepository
-import com.pp.jetweatherfy.data.forecast.IForecastRepository
+import androidx.compose.ui.test.onNodeWithTag
+import com.pp.jetweatherfy.data.city.CityRepository
+import com.pp.jetweatherfy.data.city.FakeCityDao
+import com.pp.jetweatherfy.data.forecast.FakeForecastDao
+import com.pp.jetweatherfy.data.forecast.ForecastRepository
+import com.pp.jetweatherfy.domain.ContentState
+import com.pp.jetweatherfy.domain.JetWeatherfyState
 import com.pp.jetweatherfy.ui.ForecastViewModel
-import com.pp.jetweatherfy.ui.JetWeatherfy
 import com.pp.jetweatherfy.ui.MainActivity
+import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBar
 import com.pp.jetweatherfy.ui.theme.JetWeatherfyTheme
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@HiltAndroidTest
 class TopBarTest {
 
-    @get:Rule(order = 0)
-    var hiltRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 1)
+    @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @Inject
-    lateinit var cityRepository: ICityRepository
-
-    @Inject
-    lateinit var forecastRepository: IForecastRepository
-
-    @ExperimentalAnimationApi
     @ExperimentalComposeUiApi
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-
+    @ExperimentalAnimationApi
+    @Test
+    fun actions_hidden_when_loading() {
         composeTestRule.setContent {
             JetWeatherfyTheme {
                 ProvideWindowInsets {
-                    JetWeatherfy(
-                        forecastViewModel = ForecastViewModel(
-                            forecastRepository,
-                            cityRepository
+                    JetWeatherfyTopBar(
+                        viewModel = ForecastViewModel(
+                            ForecastRepository(FakeForecastDao()),
+                            CityRepository(FakeCityDao())
                         ),
-                        onSetMyLocationClick = {}
+                        state = JetWeatherfyState.Loading,
+                        contentState = ContentState.Simple,
+                        onSetMyLocationClick = { }
                     )
                 }
             }
         }
-    }
-
-    @Test
-    fun app_logo_initially_exists() {
-        val appName = composeTestRule.activity.getString(R.string.app_name)
-        composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText(appName).assertExists()
+        composeTestRule.onNodeWithTag("AppLogo").assertExists()
     }
 }

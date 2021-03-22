@@ -24,6 +24,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.pp.jetweatherfy.domain.ContentState.Simple
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.ui.components.background.JetWeatherfySurface
 import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContent
 import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBar
@@ -61,18 +62,21 @@ class MainActivity : ForecastActivity() {
 fun JetWeatherfy(forecastViewModel: ForecastViewModel, onSetMyLocationClick: () -> Unit) {
     val state by forecastViewModel.state.observeAsState(Loading)
     val contentState by forecastViewModel.contentState.observeAsState(Simple)
+    val weatherUnit by forecastViewModel.weatherUnit.observeAsState(WeatherUnit.METRIC)
 
     JetWeatherfySurface(viewModel = forecastViewModel) {
         JetWeatherfyTopBar(
             viewModel = forecastViewModel,
             state = state,
             contentState = contentState,
+            weatherUnit = weatherUnit,
             onSetMyLocationClick = onSetMyLocationClick
         )
         JetWeatherfyContent(
             viewModel = forecastViewModel,
             state = state,
-            contentState = contentState
+            contentState = contentState,
+            weatherUnit = weatherUnit
         )
     }
 }

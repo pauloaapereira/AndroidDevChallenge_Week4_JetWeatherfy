@@ -17,12 +17,14 @@ package com.pp.jetweatherfy.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.utils.askPermissions
 import com.pp.jetweatherfy.utils.hasPermissions
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,6 +83,13 @@ abstract class ForecastActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        getLocation()
+        if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+            getLocation()
+        } else {
+            when {
+                viewModel.searchQuery.value.isNullOrBlank() -> viewModel.setState(Idle)
+                else -> viewModel.setState(Running)
+            }
+        }
     }
 }

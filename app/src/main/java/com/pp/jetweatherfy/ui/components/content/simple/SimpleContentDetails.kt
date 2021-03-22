@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.ui.components.utils.WeatherAnimation
 import com.pp.jetweatherfy.ui.components.utils.WeatherTemperature
@@ -35,7 +36,7 @@ import com.pp.jetweatherfy.ui.components.utils.WeatherWindAndPrecipitation
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 
 @Composable
-fun SimpleContentDetails(modifier: Modifier = Modifier, selectedDailyForecast: DailyForecast?) {
+fun SimpleContentDetails(modifier: Modifier = Modifier, selectedDailyForecast: DailyForecast?, weatherUnit: WeatherUnit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -47,7 +48,8 @@ fun SimpleContentDetails(modifier: Modifier = Modifier, selectedDailyForecast: D
             WeatherTemperature(
                 temperature = dailyForecast.temperature,
                 minTemperature = dailyForecast.minTemperature,
-                maxTemperature = dailyForecast.maxTemperature
+                maxTemperature = dailyForecast.maxTemperature,
+                weatherUnit = weatherUnit
             )
             ExtraInformation(dailyForecast = dailyForecast)
         }

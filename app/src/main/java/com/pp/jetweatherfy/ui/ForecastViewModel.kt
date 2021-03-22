@@ -26,6 +26,7 @@ import com.pp.jetweatherfy.domain.ContentState.Simple
 import com.pp.jetweatherfy.domain.JetWeatherfyState
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -58,12 +59,19 @@ class ForecastViewModel @Inject constructor(
     private val _state = MutableLiveData(JetWeatherfyState.Loading)
     val state: LiveData<JetWeatherfyState> = _state
 
+    private val _weatherUnit = MutableLiveData(WeatherUnit.METRIC)
+    val weatherUnit: LiveData<WeatherUnit> = _weatherUnit
+
     fun setState(newState: JetWeatherfyState) = viewModelScope.launch {
         _state.postValue(newState)
     }
 
     fun setContentState(state: ContentState) = viewModelScope.launch {
         _contentState.postValue(state)
+    }
+
+    fun setWeatherUnit(unit: WeatherUnit) = viewModelScope.launch {
+        _weatherUnit.postValue(unit)
     }
 
     fun selectCity(city: String, fromLocation: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {

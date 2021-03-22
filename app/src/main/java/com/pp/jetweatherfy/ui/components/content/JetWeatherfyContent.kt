@@ -49,6 +49,7 @@ import com.pp.jetweatherfy.domain.JetWeatherfyState
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.components.content.detailed.JetWeatherfyDetailedContent
 import com.pp.jetweatherfy.ui.components.content.simple.JetWeatherfySimpleContent
@@ -68,7 +69,8 @@ val AnimationEndOffset = 0.dp
 fun JetWeatherfyContent(
     viewModel: ForecastViewModel,
     state: JetWeatherfyState,
-    contentState: ContentState
+    contentState: ContentState,
+    weatherUnit: WeatherUnit
 ) {
     val forecast by viewModel.forecast.observeAsState()
     val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
@@ -93,13 +95,15 @@ fun JetWeatherfyContent(
             viewModel = viewModel,
             isActive = state == Running && contentState == Simple,
             forecast = forecast,
-            selectedDailyForecast = selectedDailyForecast
+            selectedDailyForecast = selectedDailyForecast,
+            weatherUnit = weatherUnit
         )
         JetWeatherfyDetailedContent(
             viewModel = viewModel,
             isActive = state == Running && contentState == Detailed,
             forecast = forecast,
-            selectedDailyForecast = selectedDailyForecast
+            selectedDailyForecast = selectedDailyForecast,
+            weatherUnit = weatherUnit
         )
         Message(
             modifier = Modifier
@@ -118,7 +122,12 @@ fun JetWeatherfyContent(
 }
 
 @Composable
-private fun Message(modifier: Modifier = Modifier, text: String, style: TextStyle = MaterialTheme.typography.h2, align: TextAlign = TextAlign.Center) {
+private fun Message(
+    modifier: Modifier = Modifier,
+    text: String,
+    style: TextStyle = MaterialTheme.typography.h2,
+    align: TextAlign = TextAlign.Center
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -134,7 +143,11 @@ private fun Message(modifier: Modifier = Modifier, text: String, style: TextStyl
 }
 
 @Composable
-fun contentOffsetTransition(transition: Transition<Boolean>, delay: Int = 0, inverseStart: Boolean = false): State<Dp> {
+fun contentOffsetTransition(
+    transition: Transition<Boolean>,
+    delay: Int = 0,
+    inverseStart: Boolean = false
+): State<Dp> {
     return transition.animateDp(
         transitionSpec = {
             tween(

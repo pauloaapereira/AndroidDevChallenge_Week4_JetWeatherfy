@@ -30,28 +30,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.WeatherUnit
 
 @Composable
 fun WeatherTemperature(
     temperature: Int,
     maxTemperature: Int? = null,
     minTemperature: Int? = null,
-    celsius: Boolean = true,
+    weatherUnit: WeatherUnit,
+    compressUnitOnAverageTemp: Boolean = true,
     alignment: Alignment.Vertical = Alignment.CenterVertically,
     temperatureStyle: TextStyle = MaterialTheme.typography.h1,
     maxAndMinStyle: TextStyle = MaterialTheme.typography.subtitle2
 ) {
-    val type = if (celsius) "º" else "ºF"
     Row(verticalAlignment = alignment) {
         AverageTemperature(
             temperature = temperature,
-            type = type,
-            style = temperatureStyle
+            weatherUnit = weatherUnit,
+            style = temperatureStyle,
+            compressUnitOnAverageTemp = compressUnitOnAverageTemp
         )
         MinAndMaxTemperature(
             maxTemperature = maxTemperature,
             minTemperature = minTemperature,
-            type = type,
+            weatherUnit = weatherUnit,
             style = maxAndMinStyle
         )
     }
@@ -60,11 +62,12 @@ fun WeatherTemperature(
 @Composable
 private fun AverageTemperature(
     temperature: Int,
-    type: String,
-    style: TextStyle
+    weatherUnit: WeatherUnit,
+    style: TextStyle,
+    compressUnitOnAverageTemp: Boolean,
 ) {
     Text(
-        text = "$temperature$type",
+        text = "$temperature${if (compressUnitOnAverageTemp) weatherUnit.compressedIndication else weatherUnit.normalIndication}",
         style = style
     )
 }
@@ -73,21 +76,21 @@ private fun AverageTemperature(
 private fun MinAndMaxTemperature(
     maxTemperature: Int?,
     minTemperature: Int?,
-    type: String,
+    weatherUnit: WeatherUnit,
     style: TextStyle
 ) {
     Column(modifier = Modifier.padding(top = 1.dp)) {
         if (maxTemperature != null && minTemperature != null) {
             MaxAndMaxTemperatureItem(
                 temperature = maxTemperature,
-                type = type,
+                weatherUnit = weatherUnit,
                 style = style,
                 icon = painterResource(id = R.drawable.ic_arrow_up),
                 contentDescription = stringResource(R.string.max_temperature)
             )
             MaxAndMaxTemperatureItem(
                 temperature = minTemperature,
-                type = type,
+                weatherUnit = weatherUnit,
                 style = style,
                 icon = painterResource(id = R.drawable.ic_arrow_down),
                 contentDescription = stringResource(R.string.min_temperature)
@@ -99,7 +102,7 @@ private fun MinAndMaxTemperature(
 @Composable
 private fun MaxAndMaxTemperatureItem(
     temperature: Int,
-    type: String,
+    weatherUnit: WeatherUnit,
     style: TextStyle,
     icon: Painter,
     contentDescription: String?
@@ -110,7 +113,7 @@ private fun MaxAndMaxTemperatureItem(
             contentDescription = contentDescription
         )
         Text(
-            text = "$temperature$type",
+            text = "$temperature${weatherUnit.normalIndication}",
             style = style
         )
     }

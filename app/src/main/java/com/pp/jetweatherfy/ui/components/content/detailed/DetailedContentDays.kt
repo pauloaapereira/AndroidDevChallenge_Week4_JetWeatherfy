@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.getFormattedTime
 import com.pp.jetweatherfy.ui.components.content.UnselectedAlpha
@@ -52,6 +53,7 @@ fun DetailedContentDays(
     dailyForecastsScrollState: LazyListState,
     selectedDailyForecast: DailyForecast?,
     dailyForecasts: List<DailyForecast>,
+    weatherUnit: WeatherUnit,
     onDailyForecastSelected: (Int, DailyForecast) -> Unit
 ) {
     val backgroundColor =
@@ -75,6 +77,7 @@ fun DetailedContentDays(
                     isSelected = dailyForecast == selectedDailyForecast,
                     dailyForecast = dailyForecast,
                     backgroundColor = backgroundColor,
+                    weatherUnit = weatherUnit,
                     onDailyForecastSelected = { onDailyForecastSelected(index, dailyForecast) }
                 )
             }
@@ -87,6 +90,7 @@ private fun Day(
     isSelected: Boolean,
     dailyForecast: DailyForecast,
     backgroundColor: Color,
+    weatherUnit: WeatherUnit,
     onDailyForecastSelected: () -> Unit
 ) {
     Row(
@@ -106,7 +110,8 @@ private fun Day(
             maxTemperature = dailyForecast.maxTemperature,
             temperatureStyle = MaterialTheme.typography.subtitle2,
             maxAndMinStyle = MaterialTheme.typography.body2,
-            alignment = Alignment.Top
+            alignment = Alignment.Top,
+            weatherUnit = weatherUnit
         )
     }
 }

@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.ui.ForecastViewModel
@@ -43,7 +44,8 @@ fun JetWeatherfyDetailedContent(
     viewModel: ForecastViewModel,
     isActive: Boolean,
     forecast: Forecast?,
-    selectedDailyForecast: DailyForecast?
+    selectedDailyForecast: DailyForecast?,
+    weatherUnit: WeatherUnit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val transition = updateTransition(targetState = isActive)
@@ -69,7 +71,8 @@ fun JetWeatherfyDetailedContent(
                 .offset(x = firstTileValue)
                 .alpha(alphaValue),
             selectedDailyForecast = selectedDailyForecast,
-            hourlyForecastsScrollState = hourlyForecastsScrollState
+            hourlyForecastsScrollState = hourlyForecastsScrollState,
+            weatherUnit = weatherUnit
         )
         DetailedContentDays(
             modifier = Modifier
@@ -84,6 +87,7 @@ fun JetWeatherfyDetailedContent(
                     hourlyForecastsScrollState.animateScrollToItem(0)
                 }
             },
+            weatherUnit = weatherUnit,
             dailyForecastsScrollState = dailyForecastsScrollState
         )
     }

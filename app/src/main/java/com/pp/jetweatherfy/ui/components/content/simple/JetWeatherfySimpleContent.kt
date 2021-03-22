@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.pp.jetweatherfy.domain.ContentState.Detailed
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.ui.ForecastViewModel
@@ -46,7 +47,8 @@ fun JetWeatherfySimpleContent(
     viewModel: ForecastViewModel,
     isActive: Boolean,
     forecast: Forecast?,
-    selectedDailyForecast: DailyForecast?
+    selectedDailyForecast: DailyForecast?,
+    weatherUnit: WeatherUnit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val dailyForecastsScrollState = rememberLazyListState()
@@ -72,7 +74,8 @@ fun JetWeatherfySimpleContent(
             modifier = Modifier
                 .offset(x = firstTileValue)
                 .alpha(alphaValue),
-            selectedDailyForecast = selectedDailyForecast
+            selectedDailyForecast = selectedDailyForecast,
+            weatherUnit = weatherUnit
         )
         SimpleContentDays(
             modifier = Modifier
@@ -99,7 +102,8 @@ fun JetWeatherfySimpleContent(
                 .alpha(alphaValue),
             scrollState = hourlyForecastsScrollState,
             hourlyForecasts = selectedDailyForecast?.hourlyForecasts ?: listOf(),
-            surfaceColor = selectedDailyForecast?.generateWeatherColorFeel()
+            surfaceColor = selectedDailyForecast?.generateWeatherColorFeel(),
+            weatherUnit = weatherUnit
         )
     }
 }

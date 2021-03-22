@@ -85,6 +85,8 @@ fun JetWeatherfySearchBar(
     }
 
     fun updateQuery(newQuery: String) {
+        if (state == Loading) return
+
         // When there is no text on the input, and the user clicks on the X
         if (query.isBlank() && newQuery.isBlank()) {
             unFocus()

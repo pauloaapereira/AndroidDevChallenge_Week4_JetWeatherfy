@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy
+package com.pp.jetweatherfy.domain
 
-import android.app.Application
-import android.content.Context
-import androidx.test.runner.AndroidJUnitRunner
-import dagger.hilt.android.testing.HiltTestApplication
-
-class CustomTestRunner : AndroidJUnitRunner() {
-    override fun newApplication(cl: ClassLoader?, name: String?, context: Context?): Application {
-        return super.newApplication(cl, HiltTestApplication::class.java.name, context)
-    }
+enum class WeatherUnit(val normalIndication: String, val compressedIndication: String = normalIndication) {
+    METRIC(normalIndication = "ºC", compressedIndication = "º"),
+    IMPERIAL(normalIndication = "ºF", compressedIndication = "º")
 }

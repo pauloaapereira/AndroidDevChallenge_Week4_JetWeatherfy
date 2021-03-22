@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.HourlyForecast
 import com.pp.jetweatherfy.ui.components.content.UnselectedAlpha
@@ -51,6 +52,7 @@ fun DetailedContentDetails(
     modifier: Modifier = Modifier,
     hourlyForecastsScrollState: LazyListState,
     selectedDailyForecast: DailyForecast?,
+    weatherUnit: WeatherUnit
 ) {
     val backgroundColor =
         (selectedDailyForecast?.generateWeatherColorFeel() ?: MaterialTheme.colors.primary).copy(
@@ -69,27 +71,31 @@ fun DetailedContentDetails(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(MediumDimension)
             ) {
-                Details(dailyForecast)
-                Hours(hourlyForecastsScrollState, dailyForecast.hourlyForecasts)
+                Details(dailyForecast, weatherUnit = weatherUnit)
+                Hours(
+                    scrollState = hourlyForecastsScrollState,
+                    hourlyForecasts = dailyForecast.hourlyForecasts,
+                    weatherUnit = weatherUnit
+                )
             }
         }
     }
 }
 
 @Composable
-private fun Details(dailyForecast: DailyForecast) {
+private fun Details(dailyForecast: DailyForecast, weatherUnit: WeatherUnit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        DetailsDescription(dailyForecast = dailyForecast)
+        DetailsDescription(dailyForecast = dailyForecast, weatherUnit = weatherUnit)
         DetailsExtraInformation(dailyForecast = dailyForecast)
     }
 }
 
 @Composable
-private fun DetailsDescription(dailyForecast: DailyForecast) {
+private fun DetailsDescription(dailyForecast: DailyForecast, weatherUnit: WeatherUnit) {
     Row(
         modifier = Modifier.wrapContentWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -105,7 +111,8 @@ private fun DetailsDescription(dailyForecast: DailyForecast) {
             maxTemperature = dailyForecast.maxTemperature,
             temperatureStyle = MaterialTheme.typography.h2,
             maxAndMinStyle = MaterialTheme.typography.body2,
-            alignment = Alignment.Top
+            alignment = Alignment.Top,
+            weatherUnit = weatherUnit
         )
     }
 }
@@ -136,21 +143,27 @@ private fun DetailsExtraInformation(dailyForecast: DailyForecast) {
 @Composable
 private fun Hours(
     scrollState: LazyListState,
-    hourlyForecasts: List<HourlyForecast>
+    hourlyForecasts: List<HourlyForecast>,
+    weatherUnit: WeatherUnit
 ) {
     LazyRow(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(SmallDimension),
         state = scrollState
     ) {
         items(hourlyForecasts) { hourlyForecast ->
-            Hour(hourlyForecast = hourlyForecast)
+            Hour(
+                hourlyForecast = hourlyForecast,
+                weatherUnit = weatherUnit
+            )
         }
     }
 }
 
 @Composable
 private fun Hour(
-    hourlyForecast: HourlyForecast
+    hourlyForecast: HourlyForecast,
+    weatherUnit: WeatherUnit
 ) {
     Column(
         modifier = Modifier.padding(MediumDimension),
@@ -159,6 +172,11 @@ private fun Hour(
     ) {
         Text(text = hourlyForecast.getFormattedTime(), style = MaterialTheme.typography.subtitle2)
         WeatherAnimation(weather = hourlyForecast.weather, animationSize = 30.dp)
-        Text(text = "${hourlyForecast.temperature}º", style = MaterialTheme.typography.subtitle1)
+        WeatherTemperature(
+            temperature = hourlyForecast.temperature,
+            temperatureStyle = MaterialTheme.typography.subtitle1,
+            weatherUnit = weatherUnit,
+            compressUnitOnAverageTemp = false
+        )
     }
 }
