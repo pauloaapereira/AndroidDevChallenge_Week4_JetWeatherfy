@@ -15,7 +15,9 @@
  */
 package com.pp.jetweatherfy.ui.components.utils
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,11 +34,13 @@ fun WeatherAnimation(weather: Weather, animationSize: Dp? = null) {
     val animationState =
         rememberLottieAnimationState(autoPlay = true, repeatCount = Integer.MAX_VALUE)
 
-    LottieAnimation(
-        animationSpec,
-        modifier = Modifier.weatherAnimationSize(animationSize),
-        animationState
-    )
+    Box(modifier = Modifier.weatherAnimationSize(animationSize)) {
+        LottieAnimation(
+            animationSpec,
+            modifier = Modifier.fillMaxWidth(),
+            animationState
+        )
+    }
 }
 
 private fun Modifier.weatherAnimationSize(size: Dp? = null): Modifier = composed {

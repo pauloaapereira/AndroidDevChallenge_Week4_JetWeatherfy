@@ -73,8 +73,6 @@ class FakeForecastDao : ForecastDao {
     ): List<HourlyForecast> {
         val firstHour = day.hourOfDay
 
-        println(firstHour)
-
         return (firstHour..23).map { hourNumber ->
             val hour = day.withHourOfDay(hourNumber)
             val temperature = when {
