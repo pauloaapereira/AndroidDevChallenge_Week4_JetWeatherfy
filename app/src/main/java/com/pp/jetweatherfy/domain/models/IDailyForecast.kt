@@ -15,11 +15,8 @@
  */
 package com.pp.jetweatherfy.domain.models
 
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 interface IDailyForecast {
     fun generateWeatherColorFeel(): Color
-    fun generateWeatherGradientFeel(baseColor: Color): Brush
-    fun generateWeatherContentColor(colorFeel: Color): Color
 }

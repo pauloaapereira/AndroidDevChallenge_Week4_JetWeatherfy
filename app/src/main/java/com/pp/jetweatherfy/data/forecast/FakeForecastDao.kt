@@ -19,7 +19,7 @@ import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.domain.models.HourlyForecast
 import com.pp.jetweatherfy.domain.models.Weather
-import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -34,7 +34,7 @@ class FakeForecastDao : ForecastDao {
     override suspend fun generateForecast() = Forecast(dailyForecasts = generateDailyForecasts())
 
     private fun generateDailyForecasts(): List<DailyForecast> {
-        val today = DateTime.now().withMinuteOfHour(0)
+        val today = LocalDateTime.now().withMinuteOfHour(0)
 
         return (0..6).map { dayNumber ->
             val dayStartHour = if (dayNumber == 0) today.hourOfDay else 0
@@ -69,9 +69,11 @@ class FakeForecastDao : ForecastDao {
         firstTemperature: Int,
         maxTemperature: Int,
         minTemperature: Int,
-        day: DateTime
+        day: LocalDateTime
     ): List<HourlyForecast> {
         val firstHour = day.hourOfDay
+
+        println(firstHour)
 
         return (firstHour..23).map { hourNumber ->
             val hour = day.withHourOfDay(hourNumber)

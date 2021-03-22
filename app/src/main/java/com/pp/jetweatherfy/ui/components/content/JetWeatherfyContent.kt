@@ -75,6 +75,7 @@ fun JetWeatherfyContent(viewModel: ForecastViewModel) {
     val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
     val selectedCity by viewModel.selectedCity.observeAsState("")
     val contentState by viewModel.contentState.observeAsState(Simple)
+    val isDetectingLocation by viewModel.detectingLocation.observeAsState(false)
 
     val contentTransition = updateTransition(targetState = selectedCity.isNotBlank())
 
@@ -104,10 +105,11 @@ fun JetWeatherfyContent(viewModel: ForecastViewModel) {
             forecast = forecast,
             selectedDailyForecast = selectedDailyForecast
         )
-        NoCitySelected(
+        ContentMessage(
             modifier = Modifier
                 .scale(cityNotSelectedValue)
-                .alpha(cityNotSelectedValue)
+                .alpha(cityNotSelectedValue),
+            text = stringResource(R.string.detecting_location)
         )
     }
 }
@@ -162,7 +164,7 @@ private fun Modifier.contentTransition(
 }
 
 @Composable
-private fun NoCitySelected(modifier: Modifier = Modifier) {
+private fun ContentMessage(modifier: Modifier = Modifier, text: String) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -170,7 +172,7 @@ private fun NoCitySelected(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(id = R.string.no_city),
+            text = text,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h2
         )

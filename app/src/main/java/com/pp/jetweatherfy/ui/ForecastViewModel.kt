@@ -27,6 +27,7 @@ import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -54,8 +55,22 @@ class ForecastViewModel @Inject constructor(
     private val _contentState = MutableLiveData(Simple)
     val contentState: LiveData<ContentState> = _contentState
 
+    private val _detectingLocation = MutableLiveData(false)
+    val detectingLocation: LiveData<Boolean> = _detectingLocation
+
+    fun selectCityFromLocation(city: String) = viewModelScope.launch(Dispatchers.IO) {
+        _selectedCity.postValue("")
+        _searchQuery.postValue("")
+        _detectingLocation.postValue(true)
+        delay(2000)
+        cityRepository.addCity(city)
+        selectCity(city)
+        _detectingLocation.postValue(false)
+    }
+
     fun selectCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
         _searchQuery.postValue(city)
+        delay(150)
         _selectedCity.postValue(city)
         val forecast = forecastRepository.getForecast(city)
         _forecast.postValue(forecast)

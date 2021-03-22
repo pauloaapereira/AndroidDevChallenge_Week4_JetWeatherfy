@@ -70,8 +70,9 @@ val typography = Typography(
         letterSpacing = 0.sp
     ),
     body1 = DefaultTypography.body1.copy(
-        fontFamily = AppFontFamily, fontWeight = FontWeight.Light,
-        fontSize = 14.sp,
+        fontFamily = AppFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
         letterSpacing = 0.sp
     ),
     body2 = DefaultTypography.body2.copy(

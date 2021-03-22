@@ -98,4 +98,7 @@ dependencies {
     // Insets
     implementation "dev.chrisbanes.accompanist:accompanist-insets:0.6.2"
 
+    // Location
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+
 }

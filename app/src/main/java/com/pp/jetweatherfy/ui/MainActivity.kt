@@ -17,8 +17,6 @@ package com.pp.jetweatherfy.ui
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,9 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-
-    private val viewModel by viewModels<ForecastViewModel>()
+class MainActivity : ForecastActivity() {
 
     @ExperimentalComposeUiApi
     @ExperimentalAnimationApi
@@ -44,10 +40,17 @@ class MainActivity : AppCompatActivity() {
         setContent {
             JetWeatherfyTheme {
                 ProvideWindowInsets {
-                    JetWeatherfy(viewModel)
+                    JetWeatherfy(
+                        forecastViewModel = viewModel,
+                        onSetMyLocationClick = {
+                            getLocation()
+                        }
+                    )
                 }
             }
         }
+
+        getLocation()
     }
 }
 
@@ -55,10 +58,10 @@ class MainActivity : AppCompatActivity() {
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-fun JetWeatherfy(forecastViewModel: ForecastViewModel) {
+fun JetWeatherfy(forecastViewModel: ForecastViewModel, onSetMyLocationClick: () -> Unit) {
     JetWeatherfySurface(viewModel = forecastViewModel) {
         Column(modifier = Modifier.fillMaxSize()) {
-            JetWeatherfyTopBar(viewModel = forecastViewModel)
+            JetWeatherfyTopBar(viewModel = forecastViewModel, onSetMyLocationClick)
             JetWeatherfyContent(viewModel = forecastViewModel)
         }
     }

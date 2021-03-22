@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Brush
 import com.pp.jetweatherfy.ui.ForecastViewModel
+import com.pp.jetweatherfy.utils.generateGradientFeel
 
 @Composable
 fun JetWeatherfySurface(viewModel: ForecastViewModel, content: @Composable () -> Unit) {
@@ -38,7 +39,7 @@ fun JetWeatherfySurface(viewModel: ForecastViewModel, content: @Composable () ->
         animationSpec = tween(400)
     )
 
-    val backgroundBrush = selectedDailyForecast?.generateWeatherGradientFeel(backgroundColorFeel)
+    val backgroundBrush = generateGradientFeel(backgroundColorFeel)
 
     Surface(
         modifier = Modifier
@@ -49,9 +50,5 @@ fun JetWeatherfySurface(viewModel: ForecastViewModel, content: @Composable () ->
 }
 
 private fun Modifier.setForecastColor(backgroundBrush: Brush? = null): Modifier = composed {
-    backgroundBrush?.let {
-        background(it)
-    } ?: run {
-        background(MaterialTheme.colors.primary)
-    }
+    background(backgroundBrush ?: generateGradientFeel(MaterialTheme.colors.primary))
 }

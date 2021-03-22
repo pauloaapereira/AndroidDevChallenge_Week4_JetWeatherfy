@@ -25,4 +25,8 @@ class CityRepository @Inject constructor(private val cityDao: CityDao) : ICityRe
     }.sorted()
 
     override suspend fun getDefaultCity() = cityDao.getDefaultCity()
+
+    override suspend fun addCity(city: String) = cityDao.addCity(formatCity(city))
+
+    private fun formatCity(city: String): String = city.toLowerCase(Locale.getDefault()).split(" ").joinToString(" ") { it.capitalize(Locale.getDefault()) }
 }

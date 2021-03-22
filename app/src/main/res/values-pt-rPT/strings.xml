@@ -6,14 +6,15 @@
     <string name="sunny">Sol</string>
     <string name="thunderstorm">Trovoada</string>
     <string name="windy">Ventoso</string>
-    <string name="choose_city">Pick your city</string>
-    <string name="location">Location</string>
-    <string name="selected">Selected</string>
-    <string name="clear">Clear</string>
-    <string name="wind">Wind Speed</string>
-    <string name="precipitation_probability">Precipitation Probability</string>
-    <string name="no_city">Choose your city…\n\nMagic might happen!</string>
-    <string name="more">More…</string>
-    <string name="today">Today</string>
-    <string name="tomorrow">Tomorrow</string>
+    <string name="choose_city">Escolhe a tua cidade</string>
+    <string name="location">Localização</string>
+    <string name="selected">Selecionado</string>
+    <string name="clear">Limpar</string>
+    <string name="wind">Velocidade do Vento</string>
+    <string name="precipitation_probability">Probabilidade de Precipitação</string>
+    <string name="no_city">Escolhe a tua cidade :)</string>
+    <string name="more">Ver mais</string>
+    <string name="today">Hoje</string>
+    <string name="tomorrow">Amanhã</string>
+    <string name="detecting_location">A detetar a tua localização…</string>
 </resources>

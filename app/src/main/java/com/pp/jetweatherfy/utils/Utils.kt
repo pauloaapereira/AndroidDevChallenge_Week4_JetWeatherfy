@@ -15,7 +15,10 @@
  */
 package com.pp.jetweatherfy.utils
 
+import android.content.pm.PackageManager
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -28,4 +31,16 @@ fun LazyListState.scrollToBegin(coroutineScope: CoroutineScope, animated: Boolea
                 scrollToItem(0)
         }
     }
+}
+
+fun FragmentActivity.hasPermissions(vararg permissions: String) = permissions.all { permission ->
+    ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+}
+
+fun FragmentActivity.askPermissions(requestCode: Int, vararg permissions: String) {
+    ActivityCompat.requestPermissions(
+        this,
+        permissions,
+        requestCode
+    )
 }

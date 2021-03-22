@@ -16,6 +16,7 @@
 package com.pp.jetweatherfy.utils
 
 import androidx.annotation.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.ColorUtils
 import kotlin.math.roundToInt
@@ -98,4 +99,15 @@ fun Color.isLightColor(hsl: FloatArray = FloatArray(3)): Boolean {
 fun Color.isDarkColor(hsl: FloatArray = FloatArray(3)): Boolean {
     ColorUtils.RGBToHSL((red * 255f).roundToInt(), (green * 255f).roundToInt(), (blue * 255f).roundToInt(), hsl)
     return hsl[2] < .5f
+}
+
+fun generateGradientFeel(baseColor: Color, lightenFactor: Float = 0.3f): Brush {
+    val lightFactor = lightenFactor.coerceIn(0f, 1f)
+
+    return Brush.verticalGradient(
+        colors = listOf(
+            baseColor,
+            baseColor.lightenColor(lightFactor)
+        )
+    )
 }

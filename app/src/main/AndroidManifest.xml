@@ -14,6 +14,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.pp.jetweatherfy">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".JetWeatherfyApp"
         android:allowBackup="true"

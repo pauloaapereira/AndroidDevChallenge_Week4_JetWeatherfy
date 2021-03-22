@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.domain.models
+package com.pp.jetweatherfy.domain
 
-import org.joda.time.LocalDateTime
-import java.util.Locale
+import com.pp.jetweatherfy.domain.models.DailyForecast
+import com.pp.jetweatherfy.domain.models.Forecast
 
-data class HourlyForecast(
-    val timestamp: String,
-    val temperature: Int,
-    val weather: Weather
-) {
-    fun getFormattedTime() = LocalDateTime.parse(timestamp).toString(Forecast.HourlyTimestampFormat)
-        .toUpperCase(Locale.getDefault())
+sealed class JetWeatherfyState {
+    data class Running(
+        val contentState: ContentState,
+        val forecast: Forecast,
+        val selectedDailyForecast: DailyForecast,
+        val searchQuery: String,
+        val selectedCity: String
+    ) : JetWeatherfyState()
+    object Loading : JetWeatherfyState()
+    object Idle : JetWeatherfyState()
 }

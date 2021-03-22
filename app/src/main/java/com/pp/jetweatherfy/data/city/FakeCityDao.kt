@@ -17,7 +17,7 @@ package com.pp.jetweatherfy.data.city
 
 class FakeCityDao : CityDao {
 
-    override suspend fun getCities() = listOf(
+    private val cities = mutableListOf(
         "London",
         "New York",
         "Paris",
@@ -65,5 +65,13 @@ class FakeCityDao : CityDao {
         "Buenos Aires"
     )
 
+    override suspend fun getCities() = cities
+
     override suspend fun getDefaultCity() = "San Francisco"
+
+    override suspend fun addCity(city: String) {
+        if (!cities.contains(city)) {
+            cities.add(city)
+        }
+    }
 }

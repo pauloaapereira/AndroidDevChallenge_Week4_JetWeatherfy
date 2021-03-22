@@ -16,18 +16,13 @@
 package com.pp.jetweatherfy.domain.models
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.data.forecast.FakeForecastDao.Companion.MaxPrecipitation
 import com.pp.jetweatherfy.data.forecast.FakeForecastDao.Companion.MaxTemperature
 import com.pp.jetweatherfy.data.forecast.FakeForecastDao.Companion.MaxWindSpeed
-import com.pp.jetweatherfy.utils.darkenColor
-import com.pp.jetweatherfy.utils.isDarkColor
-import com.pp.jetweatherfy.utils.isLightColor
-import com.pp.jetweatherfy.utils.lightenColor
-import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 
 data class DailyForecast(
     val timestamp: String,
@@ -46,31 +41,12 @@ data class DailyForecast(
             green = (windSpeed * 255 / MaxWindSpeed.toFloat()) / 255f,
             blue = (precipitationProbability * 255 / MaxPrecipitation.toFloat()) / 255f
         )
-
-    override fun generateWeatherGradientFeel(baseColor: Color): Brush {
-        val lightenFactor = .3f
-
-        return Brush.verticalGradient(
-            colors = listOf(
-                baseColor,
-                baseColor.lightenColor(lightenFactor)
-            )
-        )
-    }
-
-    override fun generateWeatherContentColor(colorFeel: Color): Color {
-        return when {
-            colorFeel.isLightColor() -> colorFeel.darkenColor(.3f)
-            colorFeel.isDarkColor() -> colorFeel.lightenColor(.3f)
-            else -> Color.Black
-        }
-    }
 }
 
 @Composable
 fun DailyForecast.getFormattedTime(): String {
-    val timestampTime = DateTime.parse(timestamp)
-    val today = DateTime.now()
+    val timestampTime = LocalDateTime.parse(timestamp)
+    val today = LocalDateTime.now()
     return when {
         timestampTime.dayOfYear == today.dayOfYear && timestampTime.year == today.year -> stringResource(
             R.string.today

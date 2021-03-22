@@ -68,6 +68,7 @@ fun JetWeatherfySearchBar(
 ) {
     var isSearching by remember { mutableStateOf(false) }
     val query by viewModel.searchQuery.observeAsState("")
+    val isDetectingLocation by viewModel.detectingLocation.observeAsState(false)
 
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
     val view = LocalView.current
@@ -104,7 +105,9 @@ fun JetWeatherfySearchBar(
                 }
                 .fillMaxWidth(),
             value = query,
-            onValueChange = { newQuery -> updateQuery(newQuery) },
+            onValueChange = { newQuery ->
+                updateQuery(newQuery)
+            },
             label = { Text(text = stringResource(id = R.string.choose_city)) },
             leadingIcon = {
                 Icon(
@@ -119,21 +122,23 @@ fun JetWeatherfySearchBar(
                     modifier = Modifier.clickable { updateQuery("") }
                 )
             },
-            textStyle = MaterialTheme.typography.subtitle1,
+            textStyle = MaterialTheme.typography.body1,
             singleLine = true,
             keyboardActions = KeyboardActions(onDone = { unFocus() }),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
+                autoCorrect = false,
                 keyboardType = KeyboardType.Text
             ),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedLabelColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high)
-            )
+            ),
+            enabled = !isDetectingLocation
         )
         AnimatedVisibility(visible = isSearching) {
             LazyColumn(
                 modifier = Modifier
-                    .heightIn(min = 0.dp, TextFieldDefaults.MinHeight * 3)
+                    .heightIn(min = 0.dp, TextFieldDefaults.MinHeight * 5)
                     .fillMaxWidth()
                     .border(
                         width = 2.dp,

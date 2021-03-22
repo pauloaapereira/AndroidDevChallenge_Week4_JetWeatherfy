@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -49,7 +50,7 @@ import dev.chrisbanes.accompanist.insets.statusBarsPadding
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-fun JetWeatherfyTopBar(viewModel: ForecastViewModel) {
+fun JetWeatherfyTopBar(viewModel: ForecastViewModel, onSetMyLocationClick: () -> Unit) {
     val cities by viewModel.cities.observeAsState(listOf())
     val selectedCity by viewModel.selectedCity.observeAsState("")
     val contentState by viewModel.contentState.observeAsState(Simple)
@@ -66,7 +67,10 @@ fun JetWeatherfyTopBar(viewModel: ForecastViewModel) {
         JetWeatherfyTitle()
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
             AnimatedVisibility(visible = selectedCity.isNotBlank()) {
-                JetWeatherfyContentToggler(viewModel = viewModel, contentState = contentState)
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                    JetWeatherfyContentToggler(viewModel = viewModel, contentState = contentState)
+                    JetWeatherfyMyLocation(onSetMyLocationClick = onSetMyLocationClick)
+                }
             }
             JetWeatherfySearchBar(viewModel = viewModel, cities = cities)
         }
@@ -102,6 +106,19 @@ private fun JetWeatherfyContentToggler(viewModel: ForecastViewModel, contentStat
             modifier = Modifier.requiredSize(
                 BigDimension
             )
+        )
+    }
+}
+
+@Composable
+fun JetWeatherfyMyLocation(onSetMyLocationClick: () -> Unit) {
+    IconButton(
+        onClick = { onSetMyLocationClick() },
+        modifier = Modifier.padding(top = MediumDimension)
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_my_location),
+            contentDescription = "Set my location"
         )
     }
 }
