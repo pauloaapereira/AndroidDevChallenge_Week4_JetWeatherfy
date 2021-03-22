@@ -42,6 +42,9 @@ import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.domain.ContentState
 import com.pp.jetweatherfy.domain.ContentState.Detailed
 import com.pp.jetweatherfy.domain.ContentState.Simple
+import com.pp.jetweatherfy.domain.JetWeatherfyState
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.theme.BigDimension
 import com.pp.jetweatherfy.ui.theme.MediumDimension
@@ -50,10 +53,8 @@ import dev.chrisbanes.accompanist.insets.statusBarsPadding
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-fun JetWeatherfyTopBar(viewModel: ForecastViewModel, onSetMyLocationClick: () -> Unit) {
+fun JetWeatherfyTopBar(viewModel: ForecastViewModel, state: JetWeatherfyState, contentState: ContentState, onSetMyLocationClick: () -> Unit) {
     val cities by viewModel.cities.observeAsState(listOf())
-    val selectedCity by viewModel.selectedCity.observeAsState("")
-    val contentState by viewModel.contentState.observeAsState(Simple)
 
     Column(
         modifier = Modifier
@@ -64,21 +65,19 @@ fun JetWeatherfyTopBar(viewModel: ForecastViewModel, onSetMyLocationClick: () ->
         verticalArrangement = Arrangement.spacedBy(BigDimension),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        JetWeatherfyTitle()
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-            AnimatedVisibility(visible = selectedCity.isNotBlank()) {
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    JetWeatherfyContentToggler(viewModel = viewModel, contentState = contentState)
-                    JetWeatherfyMyLocation(onSetMyLocationClick = onSetMyLocationClick)
-                }
-            }
-            JetWeatherfySearchBar(viewModel = viewModel, cities = cities)
-        }
+        Title()
+        Actions(
+            viewModel = viewModel,
+            state = state,
+            contentState = contentState,
+            cities = cities,
+            onSetMyLocationClick = onSetMyLocationClick
+        )
     }
 }
 
 @Composable
-private fun JetWeatherfyTitle() {
+private fun Title() {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = stringResource(id = R.string.app_name),
@@ -87,8 +86,29 @@ private fun JetWeatherfyTitle() {
     )
 }
 
+@ExperimentalComposeUiApi
+@ExperimentalAnimationApi
 @Composable
-private fun JetWeatherfyContentToggler(viewModel: ForecastViewModel, contentState: ContentState) {
+private fun Actions(
+    viewModel: ForecastViewModel,
+    state: JetWeatherfyState,
+    contentState: ContentState,
+    cities: List<String>,
+    onSetMyLocationClick: () -> Unit
+) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        AnimatedVisibility(visible = state == Running) {
+            ViewTypeToggle(viewModel = viewModel, contentState = contentState)
+        }
+        AnimatedVisibility(visible = state == Running || state == Idle) {
+            MyLocationButton(onSetMyLocationClick = onSetMyLocationClick)
+        }
+        JetWeatherfySearchBar(viewModel = viewModel, cities = cities, state = state)
+    }
+}
+
+@Composable
+private fun ViewTypeToggle(viewModel: ForecastViewModel, contentState: ContentState) {
     IconToggleButton(
         checked = contentState == Detailed,
         onCheckedChange = {
@@ -102,7 +122,7 @@ private fun JetWeatherfyContentToggler(viewModel: ForecastViewModel, contentStat
             if (contentState == Detailed) R.drawable.ic_list else R.drawable.detailed_view
         Icon(
             painter = painterResource(id = icon),
-            contentDescription = "",
+            contentDescription = stringResource(R.string.toggle_view_type),
             modifier = Modifier.requiredSize(
                 BigDimension
             )
@@ -111,14 +131,14 @@ private fun JetWeatherfyContentToggler(viewModel: ForecastViewModel, contentStat
 }
 
 @Composable
-fun JetWeatherfyMyLocation(onSetMyLocationClick: () -> Unit) {
+fun MyLocationButton(onSetMyLocationClick: () -> Unit) {
     IconButton(
         onClick = { onSetMyLocationClick() },
         modifier = Modifier.padding(top = MediumDimension)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_my_location),
-            contentDescription = "Set my location"
+            contentDescription = stringResource(R.string.get_my_location)
         )
     }
 }

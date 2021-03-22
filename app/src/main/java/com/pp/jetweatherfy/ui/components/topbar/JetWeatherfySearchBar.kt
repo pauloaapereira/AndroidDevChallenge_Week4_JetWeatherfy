@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusState.Active
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -55,8 +56,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.JetWeatherfyState
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.theme.MediumDimension
+
+private val AutoCompleteBoxSize = TextFieldDefaults.MinHeight * 5
 
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
@@ -64,11 +69,12 @@ import com.pp.jetweatherfy.ui.theme.MediumDimension
 fun JetWeatherfySearchBar(
     modifier: Modifier = Modifier,
     viewModel: ForecastViewModel,
-    cities: List<String>
+    cities: List<String>,
+    state: JetWeatherfyState
 ) {
-    var isSearching by remember { mutableStateOf(false) }
     val query by viewModel.searchQuery.observeAsState("")
-    val isDetectingLocation by viewModel.detectingLocation.observeAsState(false)
+
+    var isSearching by remember { mutableStateOf(false) }
 
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
     val view = LocalView.current
@@ -83,7 +89,7 @@ fun JetWeatherfySearchBar(
         if (query.isBlank() && newQuery.isBlank()) {
             unFocus()
         }
-        viewModel.search(newQuery)
+        viewModel.searchCity(newQuery)
     }
 
     fun setQuery(newQuery: String) {
@@ -98,65 +104,97 @@ fun JetWeatherfySearchBar(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        OutlinedTextField(
-            modifier = modifier
-                .onFocusChanged { focusState ->
-                    isSearching = focusState == Active
-                }
-                .fillMaxWidth(),
+        TextField(
+            isEnabled = state != Loading,
             value = query,
+            onFocusChanged = { isFocused -> isSearching = isFocused },
+            onDone = { unFocus() },
             onValueChange = { newQuery ->
                 updateQuery(newQuery)
-            },
-            label = { Text(text = stringResource(id = R.string.choose_city)) },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_location),
-                    contentDescription = stringResource(id = R.string.choose_city)
-                )
-            },
-            trailingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_clear),
-                    contentDescription = stringResource(R.string.clear),
-                    modifier = Modifier.clickable { updateQuery("") }
-                )
-            },
-            textStyle = MaterialTheme.typography.body1,
-            singleLine = true,
-            keyboardActions = KeyboardActions(onDone = { unFocus() }),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
-                autoCorrect = false,
-                keyboardType = KeyboardType.Text
-            ),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedLabelColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high)
-            ),
-            enabled = !isDetectingLocation
+            }
         )
-        AnimatedVisibility(visible = isSearching) {
-            LazyColumn(
-                modifier = Modifier
-                    .heightIn(min = 0.dp, TextFieldDefaults.MinHeight * 5)
-                    .fillMaxWidth()
-                    .border(
-                        width = 2.dp,
-                        color = MaterialTheme.colors.primary,
-                        shape = MaterialTheme.shapes.medium
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(cities) { city ->
-                    SearchBarItem(text = city) { setQuery(city) }
-                }
+        AutoComplete(
+            isVisible = isSearching,
+            items = cities,
+            onFieldSelected = { city ->
+                setQuery(city)
+            }
+        )
+    }
+}
+
+@Composable
+private fun TextField(
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean,
+    value: String,
+    onFocusChanged: (Boolean) -> Unit,
+    onDone: () -> Unit,
+    onValueChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        modifier = modifier
+            .onFocusChanged { focusState ->
+                onFocusChanged(focusState == Active)
+            }
+            .fillMaxWidth(),
+        value = value,
+        onValueChange = { newQuery ->
+            onValueChange(newQuery)
+        },
+        label = { Text(text = stringResource(id = R.string.choose_city)) },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_location),
+                contentDescription = stringResource(id = R.string.choose_city)
+            )
+        },
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_clear),
+                contentDescription = stringResource(R.string.clear),
+                modifier = Modifier.clickable { onValueChange("") }
+            )
+        },
+        textStyle = MaterialTheme.typography.body1,
+        singleLine = true,
+        keyboardActions = KeyboardActions(onDone = { onDone() }),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            autoCorrect = false,
+            keyboardType = KeyboardType.Text
+        ),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            unfocusedLabelColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high)
+        ),
+        enabled = isEnabled
+    )
+}
+
+@ExperimentalAnimationApi
+@Composable
+private fun AutoComplete(
+    isVisible: Boolean,
+    items: List<String>,
+    onFieldSelected: (String) -> Unit
+) {
+    AnimatedVisibility(visible = isVisible) {
+        LazyColumn(
+            modifier = Modifier
+                .heightIn(min = 0.dp, AutoCompleteBoxSize)
+                .fillMaxWidth()
+                .autoCompleteBorder(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(items) { item ->
+                AutoCompleteItem(text = item) { onFieldSelected(item) }
             }
         }
     }
 }
 
 @Composable
-private fun SearchBarItem(text: String, onClick: () -> Unit) {
+private fun AutoCompleteItem(text: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -166,4 +204,12 @@ private fun SearchBarItem(text: String, onClick: () -> Unit) {
     ) {
         Text(text = text, style = MaterialTheme.typography.subtitle2)
     }
+}
+
+private fun Modifier.autoCompleteBorder(): Modifier = composed {
+    border(
+        width = 2.dp,
+        color = MaterialTheme.colors.primary,
+        shape = MaterialTheme.shapes.medium
+    )
 }

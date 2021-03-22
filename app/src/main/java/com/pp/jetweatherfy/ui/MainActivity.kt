@@ -21,9 +21,13 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import com.pp.jetweatherfy.ui.components.JetWeatherfySurface
+import com.pp.jetweatherfy.domain.ContentState.Simple
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
+import com.pp.jetweatherfy.ui.components.background.JetWeatherfySurface
 import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContent
 import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBar
 import com.pp.jetweatherfy.ui.theme.JetWeatherfyTheme
@@ -54,15 +58,26 @@ class MainActivity : ForecastActivity() {
     }
 }
 
-// Start building your app here!
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun JetWeatherfy(forecastViewModel: ForecastViewModel, onSetMyLocationClick: () -> Unit) {
+    val state by forecastViewModel.state.observeAsState(Loading)
+    val contentState by forecastViewModel.contentState.observeAsState(Simple)
+
     JetWeatherfySurface(viewModel = forecastViewModel) {
         Column(modifier = Modifier.fillMaxSize()) {
-            JetWeatherfyTopBar(viewModel = forecastViewModel, onSetMyLocationClick)
-            JetWeatherfyContent(viewModel = forecastViewModel)
+            JetWeatherfyTopBar(
+                viewModel = forecastViewModel,
+                state = state,
+                contentState = contentState,
+                onSetMyLocationClick = onSetMyLocationClick
+            )
+            JetWeatherfyContent(
+                viewModel = forecastViewModel,
+                state = state,
+                contentState = contentState
+            )
         }
     }
 }

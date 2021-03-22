@@ -21,6 +21,8 @@ import android.location.Geocoder
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
 import com.pp.jetweatherfy.utils.askPermissions
 import com.pp.jetweatherfy.utils.hasPermissions
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,11 +57,22 @@ abstract class ForecastActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun pingLocationProvider() {
-        locationProvider.lastLocation.addOnSuccessListener {
-            geoCoder.getFromLocation(it.latitude, it.longitude, 1).firstOrNull()?.locality?.let { city ->
-                viewModel.selectCityFromLocation(city)
+        viewModel.setState(Loading)
+
+        locationProvider.lastLocation
+            .addOnCompleteListener { task ->
+                val location = task.result
+                when {
+                    location != null -> {
+                        geoCoder.getFromLocation(location.latitude, location.longitude, 1).firstOrNull()?.locality?.let { city ->
+                            viewModel.selectCity(city, fromLocation = true)
+                        }
+                    }
+                    else -> {
+                        viewModel.setState(Idle)
+                    }
+                }
             }
-        }
     }
 
     override fun onRequestPermissionsResult(

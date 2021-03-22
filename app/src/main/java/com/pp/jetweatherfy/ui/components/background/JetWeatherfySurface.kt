@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.ui.components
+package com.pp.jetweatherfy.ui.components.background
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -25,8 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.Brush
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.utils.generateGradientFeel
 
@@ -35,20 +33,15 @@ fun JetWeatherfySurface(viewModel: ForecastViewModel, content: @Composable () ->
     val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
 
     val backgroundColorFeel by animateColorAsState(
-        targetValue = selectedDailyForecast?.generateWeatherColorFeel() ?: MaterialTheme.colors.primary,
+        targetValue = selectedDailyForecast?.generateWeatherColorFeel()
+            ?: MaterialTheme.colors.primary,
         animationSpec = tween(400)
     )
-
-    val backgroundBrush = generateGradientFeel(backgroundColorFeel)
 
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .setForecastColor(backgroundBrush),
+            .background(generateGradientFeel(backgroundColorFeel)),
         content = content
     )
-}
-
-private fun Modifier.setForecastColor(backgroundBrush: Brush? = null): Modifier = composed {
-    background(backgroundBrush ?: generateGradientFeel(MaterialTheme.colors.primary))
 }

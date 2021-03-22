@@ -23,6 +23,9 @@ import com.pp.jetweatherfy.data.city.ICityRepository
 import com.pp.jetweatherfy.data.forecast.IForecastRepository
 import com.pp.jetweatherfy.domain.ContentState
 import com.pp.jetweatherfy.domain.ContentState.Simple
+import com.pp.jetweatherfy.domain.JetWeatherfyState
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,52 +52,56 @@ class ForecastViewModel @Inject constructor(
     private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> = _searchQuery
 
-    private val _selectedCity = MutableLiveData<String>()
-    val selectedCity: LiveData<String> = _selectedCity
-
     private val _contentState = MutableLiveData(Simple)
     val contentState: LiveData<ContentState> = _contentState
 
-    private val _detectingLocation = MutableLiveData(false)
-    val detectingLocation: LiveData<Boolean> = _detectingLocation
+    private val _state = MutableLiveData(JetWeatherfyState.Loading)
+    val state: LiveData<JetWeatherfyState> = _state
 
-    fun selectCityFromLocation(city: String) = viewModelScope.launch(Dispatchers.IO) {
-        _selectedCity.postValue("")
-        _searchQuery.postValue("")
-        _detectingLocation.postValue(true)
-        delay(2000)
-        cityRepository.addCity(city)
-        selectCity(city)
-        _detectingLocation.postValue(false)
+    fun setState(newState: JetWeatherfyState) = viewModelScope.launch {
+        _state.postValue(newState)
     }
 
-    fun selectCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
-        _searchQuery.postValue(city)
-        delay(150)
-        _selectedCity.postValue(city)
-        val forecast = forecastRepository.getForecast(city)
-        _forecast.postValue(forecast)
-        _selectedDailyForecast.postValue(forecast.getFirstDailyForecast())
-    }
-
-    fun setSelectedDailyForecast(dailyForecast: DailyForecast) {
-        _selectedDailyForecast.value = dailyForecast
-    }
-
-    fun search(query: String) = viewModelScope.launch(Dispatchers.IO) {
-        _searchQuery.postValue(query)
-        val cities = cityRepository.getCities(query)
-        _cities.postValue(cities)
-
-        if (query.isBlank())
-            _selectedCity.postValue("")
-    }
-
-    fun setContentState(state: ContentState) {
+    fun setContentState(state: ContentState) = viewModelScope.launch {
         _contentState.postValue(state)
     }
 
+    fun selectCity(city: String, fromLocation: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
+        if (fromLocation) {
+            delay(2000L)
+            cityRepository.addCity(city)
+        }
+
+        _searchQuery.postValue(city)
+        delay(150)
+
+        val forecast = forecastRepository.getForecast(city)
+        _forecast.postValue(forecast)
+        _selectedDailyForecast.postValue(forecast.getFirstDailyForecast())
+
+        setState(Running)
+    }
+
+    fun selectDailyForecast(dailyForecast: DailyForecast) = viewModelScope.launch {
+        _selectedDailyForecast.postValue(dailyForecast)
+    }
+
+    fun searchCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
+        _searchQuery.postValue(city)
+
+        if (city.isBlank()) {
+            setState(Idle)
+        }
+
+        getCities(city)
+    }
+
+    private fun getCities(city: String) = viewModelScope.launch(Dispatchers.IO) {
+        val cities = cityRepository.getCities(city)
+        _cities.postValue(cities)
+    }
+
     init {
-        search("")
+        getCities("")
     }
 }

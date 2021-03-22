@@ -12,9 +12,13 @@
     <string name="clear">Limpiar</string>
     <string name="wind">Velocidad del Viento</string>
     <string name="precipitation_probability">Probabilidad de Precipitación</string>
-    <string name="no_city">Elige tu ciudad :)</string>
-    <string name="more">…</string>
+    <string name="no_city">“La conversación sobre el clima es el último refugio de los sin imaginación“.\n\n- Oscar Wilde</string>
+    <string name="more">Ver más</string>
     <string name="today">Hoy</string>
     <string name="tomorrow">Mañana</string>
     <string name="detecting_location">Detectando tu localización…</string>
+    <string name="get_my_location">Obtener mi localización</string>
+    <string name="toggle_view_type">Alternar tipo de vista</string>
+    <string name="max_temperature">Temperature Máxima</string>
+    <string name="min_temperature">Temperatura Mínima</string>
 </resources>

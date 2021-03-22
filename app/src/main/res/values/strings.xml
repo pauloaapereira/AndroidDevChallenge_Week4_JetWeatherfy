@@ -21,9 +21,13 @@
     <string name="clear">Clear</string>
     <string name="wind">Wind Speed</string>
     <string name="precipitation_probability">Precipitation Probability</string>
-    <string name="no_city">Pick your city :)</string>
+    <string name="no_city">“Conversation about the weather is the last refuge of the unimaginative.”\n\n– Oscar Wilde</string>
     <string name="more">See more</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="detecting_location">Detecting your location…</string>
+    <string name="get_my_location">Get my location</string>
+    <string name="toggle_view_type">Toggle view type</string>
+    <string name="max_temperature">Max Temperature</string>
+    <string name="min_temperature">Min Temperature</string>
 </resources>

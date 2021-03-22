@@ -6,15 +6,19 @@
     <string name="sunny">Sol</string>
     <string name="thunderstorm">Trovoada</string>
     <string name="windy">Ventoso</string>
-    <string name="choose_city">Escolhe a tua cidade</string>
+    <string name="choose_city">Escolhe a cidade</string>
     <string name="location">Localização</string>
     <string name="selected">Selecionado</string>
     <string name="clear">Limpar</string>
     <string name="wind">Velocidade do Vento</string>
     <string name="precipitation_probability">Probabilidade de Precipitação</string>
-    <string name="no_city">Escolhe a tua cidade :)</string>
+    <string name="no_city">“A conversa sobre o tempo é o último refúgio dos sem imaginação.”\n\n- Oscar Wilde</string>
     <string name="more">Ver mais</string>
     <string name="today">Hoje</string>
     <string name="tomorrow">Amanhã</string>
     <string name="detecting_location">A detetar a tua localização…</string>
+    <string name="get_my_location">Obter a minha localização</string>
+    <string name="toggle_view_type">Trocar modo de vista</string>
+    <string name="max_temperature">Temperatura Máxima</string>
+    <string name="min_temperature">Temperatura Mínima</string>
 </resources>
