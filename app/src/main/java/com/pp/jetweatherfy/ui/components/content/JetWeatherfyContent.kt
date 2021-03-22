@@ -53,10 +53,6 @@ import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.domain.ContentState
 import com.pp.jetweatherfy.domain.ContentState.Detailed
 import com.pp.jetweatherfy.domain.ContentState.Simple
-import com.pp.jetweatherfy.domain.JetWeatherfyState
-import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
-import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
-import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.domain.models.Weather
@@ -74,33 +70,26 @@ const val AnimationDuration = 1000
 
 @ExperimentalAnimationApi
 @Composable
-fun JetWeatherfyContent(
-    viewModel: ForecastViewModel,
-    state: JetWeatherfyState
-) {
+fun JetWeatherfyContent(viewModel: ForecastViewModel) {
     val forecast by viewModel.forecast.observeAsState()
     val selectedDailyForecast by viewModel.selectedDailyForecast.observeAsState()
+    val selectedCity by viewModel.selectedCity.observeAsState("")
+    val contentState by viewModel.contentState.observeAsState(Simple)
+    val isDetectingLocation by viewModel.detectingLocation.observeAsState(false)
 
-    val contentTransition = updateTransition(targetState = state)
+    val contentTransition = updateTransition(targetState = selectedCity.isNotBlank())
 
-    val idleValue by contentTransition.animateFloat(
+    val cityNotSelectedValue by contentTransition.animateFloat(
         transitionSpec = {
             tween(
                 AnimationDuration
             )
         }
-    ) { appState ->
-        if (appState is Idle) 1f else 0f
-    }
-
-    val detectingLocationValue by contentTransition.animateFloat(
-        transitionSpec = {
-            tween(
-                AnimationDuration
-            )
+    ) { isCitySelected ->
+        when (isCitySelected) {
+            true -> 0f
+            false -> 1f
         }
-    ) { appState ->
-        if (appState is Loading) 1f else 0f
     }
 
     Box(
@@ -110,22 +99,16 @@ fun JetWeatherfyContent(
             .navigationBarsPadding(left = false, right = false)
     ) {
         Content(
+            contentState = contentState,
             viewModel = viewModel,
-            state = state,
-            contentTransition = contentTransition,
+            isCitySelected = selectedCity.isNotBlank(),
             forecast = forecast,
             selectedDailyForecast = selectedDailyForecast
         )
         ContentMessage(
             modifier = Modifier
-                .scale(idleValue)
-                .alpha(idleValue),
-            text = stringResource(R.string.choose_city)
-        )
-        ContentMessage(
-            modifier = Modifier
-                .scale(detectingLocationValue)
-                .alpha(detectingLocationValue),
+                .scale(cityNotSelectedValue)
+                .alpha(cityNotSelectedValue),
             text = stringResource(R.string.detecting_location)
         )
     }
@@ -134,26 +117,27 @@ fun JetWeatherfyContent(
 @ExperimentalAnimationApi
 @Composable
 private fun Content(
+    contentState: ContentState,
     viewModel: ForecastViewModel,
-    contentTransition: Transition<JetWeatherfyState>,
-    state: JetWeatherfyState,
+    isCitySelected: Boolean,
     forecast: Forecast?,
     selectedDailyForecast: DailyForecast?
 ) {
+    val contentStateTransition = updateTransition(targetState = contentState)
 
-    Box(modifier = Modifier.contentTransition(contentTransition, Simple)) {
+    Box(modifier = Modifier.contentTransition(contentStateTransition, Simple)) {
         JetWeatherfySimpleContent(
             viewModel = viewModel,
-            isActive = state is Running && state.isOnSimpleView(),
+            isActive = isCitySelected && contentState == Simple,
             forecast = forecast,
             selectedDailyForecast = selectedDailyForecast
         )
     }
 
-    Box(modifier = Modifier.contentTransition(contentTransition, Detailed)) {
+    Box(modifier = Modifier.contentTransition(contentStateTransition, Detailed)) {
         JetWeatherfyDetailedContent(
             viewModel = viewModel,
-            isActive = state is Running && state.isOnDetailedView(),
+            isActive = isCitySelected && contentState == Detailed,
             forecast = forecast,
             selectedDailyForecast = selectedDailyForecast
         )
@@ -161,7 +145,7 @@ private fun Content(
 }
 
 private fun Modifier.contentTransition(
-    contentStateTransition: Transition<JetWeatherfyState>,
+    contentStateTransition: Transition<ContentState>,
     ownState: ContentState
 ): Modifier = composed {
     val transitionValue by contentStateTransition.animateFloat(
@@ -171,7 +155,7 @@ private fun Modifier.contentTransition(
             )
         }
     ) { state ->
-        if (state is Running && state.contentState == ownState) 1f else 0f
+        if (state == ownState) 1f else 0f
     }
 
     graphicsLayer {

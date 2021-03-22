@@ -23,8 +23,6 @@ import com.pp.jetweatherfy.data.city.ICityRepository
 import com.pp.jetweatherfy.data.forecast.IForecastRepository
 import com.pp.jetweatherfy.domain.ContentState
 import com.pp.jetweatherfy.domain.ContentState.Simple
-import com.pp.jetweatherfy.domain.JetWeatherfyState
-import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,20 +55,17 @@ class ForecastViewModel @Inject constructor(
     private val _contentState = MutableLiveData(Simple)
     val contentState: LiveData<ContentState> = _contentState
 
-    private val _state = MutableLiveData<JetWeatherfyState>(Loading)
-    val state: LiveData<JetWeatherfyState> = _state
-
-    fun setState(state: JetWeatherfyState, delay: Long = 0L) = viewModelScope.launch(Dispatchers.IO) {
-        delay(delay)
-        _state.postValue(state)
-    }
+    private val _detectingLocation = MutableLiveData(false)
+    val detectingLocation: LiveData<Boolean> = _detectingLocation
 
     fun selectCityFromLocation(city: String) = viewModelScope.launch(Dispatchers.IO) {
         _selectedCity.postValue("")
         _searchQuery.postValue("")
+        _detectingLocation.postValue(true)
         delay(2000)
         cityRepository.addCity(city)
         selectCity(city)
+        _detectingLocation.postValue(false)
     }
 
     fun selectCity(city: String) = viewModelScope.launch(Dispatchers.IO) {
