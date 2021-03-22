@@ -21,6 +21,7 @@ buildscript {
         coroutines_version = '1.4.2'
         dagger_hilt_version = '2.33-beta'
         androidX_hilt_version = '1.0.0-beta01'
+        androidX_hilt_test_version = '2.33-beta'
         androidX_hilt_viewmodel_version = '1.0.0-alpha03'
         retrofit_version = '2.9.0'
     }

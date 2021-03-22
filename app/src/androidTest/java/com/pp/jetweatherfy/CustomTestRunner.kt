@@ -15,25 +15,13 @@
  */
 package com.pp.jetweatherfy
 
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.pp.jetweatherfy.ui.MainActivity
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
+import android.app.Application
+import android.content.Context
+import androidx.test.runner.AndroidJUnitRunner
+import dagger.hilt.android.testing.HiltTestApplication
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @get:Rule
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
-
-    @Test
-    fun sampleTest() {
-        // Add instrumented tests here
+class CustomTestRunner : AndroidJUnitRunner() {
+    override fun newApplication(cl: ClassLoader?, name: String?, context: Context?): Application {
+        return super.newApplication(cl, HiltTestApplication::class.java.name, context)
     }
 }

@@ -18,6 +18,7 @@ package com.pp.jetweatherfy.ui.components.background
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -42,6 +43,9 @@ fun JetWeatherfySurface(viewModel: ForecastViewModel, content: @Composable () ->
         modifier = Modifier
             .fillMaxSize()
             .background(generateGradientFeel(backgroundColorFeel)),
-        content = content
-    )
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            content()
+        }
+    }
 }

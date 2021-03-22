@@ -29,7 +29,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.domain.models.DailyForecast
 import com.pp.jetweatherfy.domain.models.Forecast
 import com.pp.jetweatherfy.ui.ForecastViewModel
@@ -38,9 +37,6 @@ import com.pp.jetweatherfy.ui.components.content.contentOffsetTransition
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 import com.pp.jetweatherfy.utils.scrollToBegin
 import kotlinx.coroutines.launch
-
-private val AnimationStartOffset = (-400).dp
-private val AnimationEndOffset = 0.dp
 
 @Composable
 fun JetWeatherfyDetailedContent(
