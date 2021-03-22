@@ -55,6 +55,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.R
+import com.pp.jetweatherfy.domain.JetWeatherfyState
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 
@@ -64,11 +67,11 @@ import com.pp.jetweatherfy.ui.theme.MediumDimension
 fun JetWeatherfySearchBar(
     modifier: Modifier = Modifier,
     viewModel: ForecastViewModel,
+    state: JetWeatherfyState,
     cities: List<String>
 ) {
     var isSearching by remember { mutableStateOf(false) }
     val query by viewModel.searchQuery.observeAsState("")
-    val isDetectingLocation by viewModel.detectingLocation.observeAsState(false)
 
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
     val view = LocalView.current
@@ -133,7 +136,7 @@ fun JetWeatherfySearchBar(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedLabelColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.high)
             ),
-            enabled = !isDetectingLocation
+            enabled = state is Running || state is Idle
         )
         AnimatedVisibility(visible = isSearching) {
             LazyColumn(

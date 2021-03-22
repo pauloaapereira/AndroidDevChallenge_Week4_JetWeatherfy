@@ -21,8 +21,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
 import com.pp.jetweatherfy.ui.components.JetWeatherfySurface
 import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContent
 import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBar
@@ -59,10 +62,19 @@ class MainActivity : ForecastActivity() {
 @ExperimentalAnimationApi
 @Composable
 fun JetWeatherfy(forecastViewModel: ForecastViewModel, onSetMyLocationClick: () -> Unit) {
+    val state by forecastViewModel.state.observeAsState(Loading)
+
     JetWeatherfySurface(viewModel = forecastViewModel) {
         Column(modifier = Modifier.fillMaxSize()) {
-            JetWeatherfyTopBar(viewModel = forecastViewModel, onSetMyLocationClick)
-            JetWeatherfyContent(viewModel = forecastViewModel)
+            JetWeatherfyTopBar(
+                viewModel = forecastViewModel,
+                state = state,
+                onSetMyLocationClick = onSetMyLocationClick
+            )
+            JetWeatherfyContent(
+                viewModel = forecastViewModel,
+                state = state
+            )
         }
     }
 }

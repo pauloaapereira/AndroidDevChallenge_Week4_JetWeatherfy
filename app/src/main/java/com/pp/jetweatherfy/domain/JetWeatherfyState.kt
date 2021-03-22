@@ -15,17 +15,14 @@
  */
 package com.pp.jetweatherfy.domain
 
-import com.pp.jetweatherfy.domain.models.DailyForecast
-import com.pp.jetweatherfy.domain.models.Forecast
+import com.pp.jetweatherfy.domain.ContentState.Detailed
+import com.pp.jetweatherfy.domain.ContentState.Simple
 
 sealed class JetWeatherfyState {
-    data class Running(
-        val contentState: ContentState,
-        val forecast: Forecast,
-        val selectedDailyForecast: DailyForecast,
-        val searchQuery: String,
-        val selectedCity: String
-    ) : JetWeatherfyState()
+    data class Running(val contentState: ContentState) : JetWeatherfyState() {
+        fun isOnSimpleView() = contentState == Simple
+        fun isOnDetailedView() = contentState == Detailed
+    }
     object Loading : JetWeatherfyState()
     object Idle : JetWeatherfyState()
 }

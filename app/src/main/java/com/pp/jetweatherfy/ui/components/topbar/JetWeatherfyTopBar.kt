@@ -39,9 +39,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.pp.jetweatherfy.R
-import com.pp.jetweatherfy.domain.ContentState
 import com.pp.jetweatherfy.domain.ContentState.Detailed
 import com.pp.jetweatherfy.domain.ContentState.Simple
+import com.pp.jetweatherfy.domain.JetWeatherfyState
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.theme.BigDimension
 import com.pp.jetweatherfy.ui.theme.MediumDimension
@@ -50,10 +52,12 @@ import dev.chrisbanes.accompanist.insets.statusBarsPadding
 @ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
-fun JetWeatherfyTopBar(viewModel: ForecastViewModel, onSetMyLocationClick: () -> Unit) {
+fun JetWeatherfyTopBar(
+    viewModel: ForecastViewModel,
+    state: JetWeatherfyState,
+    onSetMyLocationClick: () -> Unit
+) {
     val cities by viewModel.cities.observeAsState(listOf())
-    val selectedCity by viewModel.selectedCity.observeAsState("")
-    val contentState by viewModel.contentState.observeAsState(Simple)
 
     Column(
         modifier = Modifier
@@ -66,13 +70,13 @@ fun JetWeatherfyTopBar(viewModel: ForecastViewModel, onSetMyLocationClick: () ->
     ) {
         JetWeatherfyTitle()
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
-            AnimatedVisibility(visible = selectedCity.isNotBlank()) {
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    JetWeatherfyContentToggler(viewModel = viewModel, contentState = contentState)
-                    JetWeatherfyMyLocation(onSetMyLocationClick = onSetMyLocationClick)
-                }
+            AnimatedVisibility(visible = state is Running) {
+                JetWeatherfyContentToggler(viewModel = viewModel, state = state as Running)
             }
-            JetWeatherfySearchBar(viewModel = viewModel, cities = cities)
+            AnimatedVisibility(visible = state is Running || state is Idle) {
+                JetWeatherfyMyLocation(onSetMyLocationClick = onSetMyLocationClick)
+            }
+            JetWeatherfySearchBar(viewModel = viewModel, cities = cities, state = state)
         }
     }
 }
@@ -88,18 +92,17 @@ private fun JetWeatherfyTitle() {
 }
 
 @Composable
-private fun JetWeatherfyContentToggler(viewModel: ForecastViewModel, contentState: ContentState) {
+private fun JetWeatherfyContentToggler(viewModel: ForecastViewModel, state: Running) {
     IconToggleButton(
-        checked = contentState == Detailed,
+        checked = state.isOnDetailedView(),
         onCheckedChange = {
-            viewModel.setContentState(
-                if (contentState == Simple) Detailed else Simple
+            viewModel.setState(
+                state.copy(contentState = if (state.isOnSimpleView()) Detailed else Simple)
             )
         },
         modifier = Modifier.padding(top = MediumDimension)
     ) {
-        val icon =
-            if (contentState == Detailed) R.drawable.ic_list else R.drawable.detailed_view
+        val icon = if (state.isOnDetailedView()) R.drawable.ic_list else R.drawable.detailed_view
         Icon(
             painter = painterResource(id = icon),
             contentDescription = "",
