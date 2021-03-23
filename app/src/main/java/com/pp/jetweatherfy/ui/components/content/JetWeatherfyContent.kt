@@ -34,9 +34,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -48,9 +51,15 @@ import com.pp.jetweatherfy.domain.ContentState.Simple
 import com.pp.jetweatherfy.domain.JetWeatherfyState
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
+import com.pp.jetweatherfy.domain.JetWeatherfyState.LocationError
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.ui.ForecastViewModel
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContentTestHelper.DetailedContent
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContentTestHelper.DetectingLocation
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContentTestHelper.DetectingLocationError
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContentTestHelper.NoCity
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContentTestHelper.SimpleContent
 import com.pp.jetweatherfy.ui.components.content.detailed.JetWeatherfyDetailedContent
 import com.pp.jetweatherfy.ui.components.content.simple.JetWeatherfySimpleContent
 import com.pp.jetweatherfy.ui.theme.BigDimension
@@ -85,6 +94,16 @@ fun JetWeatherfyContent(
         if (newState == Idle) 1f else 0f
     }
 
+    val locationErrorValue by stateTransition.animateFloat(
+        transitionSpec = {
+            tween(
+                AnimationDuration
+            )
+        }
+    ) { newState ->
+        if (newState == LocationError) 1f else 0f
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -92,6 +111,7 @@ fun JetWeatherfyContent(
             .navigationBarsPadding(left = false, right = false)
     ) {
         JetWeatherfySimpleContent(
+            modifier = Modifier.setTestTag(SimpleContent),
             viewModel = viewModel,
             isActive = state == Running && contentState == Simple,
             forecast = forecast,
@@ -99,6 +119,7 @@ fun JetWeatherfyContent(
             weatherUnit = weatherUnit
         )
         JetWeatherfyDetailedContent(
+            modifier = Modifier.setTestTag(DetailedContent),
             viewModel = viewModel,
             isActive = state == Running && contentState == Detailed,
             forecast = forecast,
@@ -108,15 +129,23 @@ fun JetWeatherfyContent(
         Message(
             modifier = Modifier
                 .scale(loadingValue)
-                .alpha(loadingValue),
+                .alpha(loadingValue)
+                .setTestTag(DetectingLocation),
             text = stringResource(R.string.detecting_location)
         )
         Message(
             modifier = Modifier
+                .scale(locationErrorValue)
+                .alpha(locationErrorValue)
+                .setTestTag(DetectingLocationError),
+            text = stringResource(R.string.location_error)
+        )
+        Message(
+            modifier = Modifier
                 .scale(idleValue)
-                .alpha(idleValue),
-            text = stringResource(R.string.no_city),
-            style = MaterialTheme.typography.subtitle1
+                .alpha(idleValue)
+                .setTestTag(NoCity),
+            text = stringResource(R.string.no_city)
         )
     }
 }
@@ -125,7 +154,7 @@ fun JetWeatherfyContent(
 private fun Message(
     modifier: Modifier = Modifier,
     text: String,
-    style: TextStyle = MaterialTheme.typography.h2,
+    style: TextStyle = MaterialTheme.typography.subtitle1,
     align: TextAlign = TextAlign.Center
 ) {
     Box(
@@ -161,5 +190,23 @@ fun contentOffsetTransition(
             true -> AnimationEndOffset
             false -> if (inverseStart) AnimationStartOffset * -1 else AnimationStartOffset
         }
+    }
+}
+
+// Testing
+
+object JetWeatherfyContentTestHelper {
+    fun getTestTag(viewTag: String) = "JetWeatherfyContent_$viewTag"
+
+    const val SimpleContent = "SimpleContent"
+    const val DetailedContent = "DetailedContent"
+    const val DetectingLocation = "DetectingLocation"
+    const val DetectingLocationError = "DetectingLocationError"
+    const val NoCity = "NoCity"
+}
+
+private fun Modifier.setTestTag(tag: String): Modifier = composed {
+    semantics {
+        testTag = JetWeatherfyContentTestHelper.getTestTag(tag)
     }
 }

@@ -21,4 +21,5 @@
     <string name="toggle_view_type">Alternar tipo de vista</string>
     <string name="max_temperature">Temperature Máxima</string>
     <string name="min_temperature">Temperatura Mínima</string>
+    <string name="location_error">Error al obtener tu localización. Asegúrese de tener la localización activada y vuelva a intentar en unos segundos.</string>
 </resources>

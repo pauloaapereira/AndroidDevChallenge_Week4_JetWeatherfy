@@ -40,6 +40,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,6 +58,11 @@ import com.pp.jetweatherfy.domain.WeatherUnit.IMPERIAL
 import com.pp.jetweatherfy.domain.WeatherUnit.METRIC
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.components.content.AnimationDuration
+import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBarTestHelper.GetLocationButton
+import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBarTestHelper.SearchBar
+import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBarTestHelper.SearchBarClearButton
+import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBarTestHelper.ViewTypeToggle
+import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBarTestHelper.WeatherUnitToggle
 import com.pp.jetweatherfy.ui.theme.BigDimension
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 import com.pp.jetweatherfy.ui.theme.SmallDimension
@@ -90,7 +96,13 @@ fun JetWeatherfyTopBar(
             weatherUnit = weatherUnit,
             onSetMyLocationClick = onSetMyLocationClick
         )
-        JetWeatherfySearchBar(viewModel = viewModel, cities = cities, state = state)
+        JetWeatherfySearchBar(
+            modifier = Modifier.setTestTag(SearchBar),
+            trailingIconModifier = Modifier.setTestTag(SearchBarClearButton),
+            viewModel = viewModel,
+            cities = cities,
+            state = state
+        )
     }
 }
 
@@ -128,7 +140,7 @@ private fun LogoBar(
                 isActive = state == Running,
                 contentState = contentState
             )
-            MyLocationButton(
+            GetLocationButton(
                 isActive = state == Running || state == Idle,
                 onSetMyLocationClick = onSetMyLocationClick
             )
@@ -148,7 +160,7 @@ private fun WeatherUnitToggle(
     IconButton(
         modifier = Modifier
             .alpha(buttonAlpha)
-            .semantics { testTag = "MyLocationButton" },
+            .setTestTag(WeatherUnitToggle),
         onClick = { viewModel.setWeatherUnit(if (weatherUnit == METRIC) IMPERIAL else METRIC) },
         enabled = isActive
     ) {
@@ -174,7 +186,7 @@ private fun ViewTypeToggle(
     IconToggleButton(
         modifier = Modifier
             .alpha(buttonAlpha)
-            .semantics { testTag = "ViewTypeToggle" },
+            .setTestTag(ViewTypeToggle),
         checked = contentState == Detailed,
         onCheckedChange = {
             viewModel.setContentState(
@@ -196,14 +208,14 @@ private fun ViewTypeToggle(
 }
 
 @Composable
-fun MyLocationButton(isActive: Boolean, onSetMyLocationClick: () -> Unit) {
+fun GetLocationButton(isActive: Boolean, onSetMyLocationClick: () -> Unit) {
     val buttonTransition = updateTransition(targetState = isActive)
     val buttonAlpha by topBarButtonTransition(transition = buttonTransition)
 
     IconButton(
         modifier = Modifier
             .alpha(buttonAlpha)
-            .semantics { testTag = "MyLocationButton" },
+            .setTestTag(GetLocationButton),
         onClick = { onSetMyLocationClick() },
         enabled = isActive
     ) {
@@ -230,5 +242,23 @@ fun topBarButtonTransition(
             true -> 1f
             false -> 0f
         }
+    }
+}
+
+// Testing
+
+object JetWeatherfyTopBarTestHelper {
+    fun getTestTag(viewTag: String) = "JetWeatherfyTopBar_$viewTag"
+
+    const val GetLocationButton = "GetLocationButton"
+    const val ViewTypeToggle = "ViewTypeToggle"
+    const val WeatherUnitToggle = "WeatherUnitToggle"
+    const val SearchBar = "SearchBar"
+    const val SearchBarClearButton = "SearchBarClearButton"
+}
+
+private fun Modifier.setTestTag(tag: String): Modifier = composed {
+    semantics {
+        testTag = JetWeatherfyTopBarTestHelper.getTestTag(tag)
     }
 }

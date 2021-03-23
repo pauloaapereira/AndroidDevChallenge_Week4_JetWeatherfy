@@ -31,6 +31,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.domain.WeatherUnit
+import com.pp.jetweatherfy.domain.WeatherUnit.IMPERIAL
+import com.pp.jetweatherfy.domain.WeatherUnit.METRIC
+import kotlin.math.roundToInt
 
 @Composable
 fun WeatherTemperature(
@@ -43,16 +46,33 @@ fun WeatherTemperature(
     temperatureStyle: TextStyle = MaterialTheme.typography.h1,
     maxAndMinStyle: TextStyle = MaterialTheme.typography.subtitle2
 ) {
+    val finalTemperature = when (weatherUnit) {
+        METRIC -> temperature
+        IMPERIAL -> ((temperature * (9 / 5f)) + 32).roundToInt()
+    }
+    val finalMinTemperature = minTemperature?.let {
+        when (weatherUnit) {
+            METRIC -> minTemperature
+            IMPERIAL -> ((minTemperature * (9 / 5f)) + 32).roundToInt()
+        }
+    }
+    val finalMaxTemperature = maxTemperature?.let {
+        when (weatherUnit) {
+            METRIC -> maxTemperature
+            IMPERIAL -> ((maxTemperature * (9 / 5f)) + 32).roundToInt()
+        }
+    }
+
     Row(verticalAlignment = alignment) {
         AverageTemperature(
-            temperature = temperature,
+            temperature = finalTemperature,
             weatherUnit = weatherUnit,
             style = temperatureStyle,
             compressUnitOnAverageTemp = compressUnitOnAverageTemp
         )
         MinAndMaxTemperature(
-            maxTemperature = maxTemperature,
-            minTemperature = minTemperature,
+            maxTemperature = finalMaxTemperature,
+            minTemperature = finalMinTemperature,
             weatherUnit = weatherUnit,
             style = maxAndMinStyle
         )

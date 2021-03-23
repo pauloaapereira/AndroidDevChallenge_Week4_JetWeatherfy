@@ -19,11 +19,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.Location
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
+import com.pp.jetweatherfy.domain.JetWeatherfyState.LocationError
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.utils.askPermissions
 import com.pp.jetweatherfy.utils.hasPermissions
@@ -40,6 +45,21 @@ abstract class ForecastActivity : AppCompatActivity() {
 
     @Inject
     lateinit var geoCoder: Geocoder
+
+    private val locationRequest: LocationRequest by lazy {
+        LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 5 * 1000
+        }
+    }
+
+    private val locationCallback: LocationCallback by lazy {
+        object : LocationCallback() {
+            override fun onLocationResult(result: LocationResult) {
+                locationProvider.removeLocationUpdates(locationCallback)
+            }
+        }
+    }
 
     protected fun getLocation() {
         if (hasPermissions(
@@ -62,19 +82,31 @@ abstract class ForecastActivity : AppCompatActivity() {
         viewModel.setState(Loading)
 
         locationProvider.lastLocation
-            .addOnCompleteListener { task ->
-                val location = task.result
-                when {
-                    location != null -> {
-                        geoCoder.getFromLocation(location.latitude, location.longitude, 1).firstOrNull()?.locality?.let { city ->
-                            viewModel.selectCity(city, fromLocation = true)
-                        }
-                    }
-                    else -> {
-                        viewModel.setState(Idle)
-                    }
+            .addOnSuccessListener { location ->
+                selectCityFromLocation(location)
+            }
+            .addOnFailureListener {
+                viewModel.setState(Idle)
+            }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun selectCityFromLocation(location: Location?) {
+        when {
+            location != null -> {
+                geoCoder.getFromLocation(location.latitude, location.longitude, 1).firstOrNull()?.locality?.let { city ->
+                    viewModel.selectCity(city, fromLocation = true)
                 }
             }
+            else -> {
+                locationProvider.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback,
+                    mainLooper
+                )
+                viewModel.setState(LocationError)
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(

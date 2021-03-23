@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.R
 import com.pp.jetweatherfy.domain.JetWeatherfyState
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
+import com.pp.jetweatherfy.domain.JetWeatherfyState.LocationError
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.theme.MediumDimension
 
@@ -68,6 +69,7 @@ private val AutoCompleteBoxSize = TextFieldDefaults.MinHeight * 5
 @Composable
 fun JetWeatherfySearchBar(
     modifier: Modifier = Modifier,
+    trailingIconModifier: Modifier = Modifier,
     viewModel: ForecastViewModel,
     cities: List<String>,
     state: JetWeatherfyState
@@ -100,14 +102,16 @@ fun JetWeatherfySearchBar(
     }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .animateContentSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         TextField(
-            isEnabled = state != Loading,
+            modifier = modifier,
+            trailingIconModifier = trailingIconModifier,
+            isEnabled = state != Loading && state != LocationError,
             value = query,
             onFocusChanged = { isFocused -> isSearching = isFocused },
             onDone = { unFocus() },
@@ -128,6 +132,7 @@ fun JetWeatherfySearchBar(
 @Composable
 private fun TextField(
     modifier: Modifier = Modifier,
+    trailingIconModifier: Modifier = Modifier,
     isEnabled: Boolean,
     value: String,
     onFocusChanged: (Boolean) -> Unit,
@@ -155,10 +160,10 @@ private fun TextField(
             Icon(
                 painter = painterResource(id = R.drawable.ic_clear),
                 contentDescription = stringResource(R.string.clear),
-                modifier = Modifier.clickable { onValueChange("") }
+                modifier = trailingIconModifier.clickable { onValueChange("") }
             )
         },
-        textStyle = MaterialTheme.typography.body1,
+        textStyle = MaterialTheme.typography.subtitle1,
         singleLine = true,
         keyboardActions = KeyboardActions(onDone = { onDone() }),
         keyboardOptions = KeyboardOptions(

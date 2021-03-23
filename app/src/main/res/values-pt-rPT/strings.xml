@@ -21,4 +21,5 @@
     <string name="toggle_view_type">Trocar modo de vista</string>
     <string name="max_temperature">Temperatura Máxima</string>
     <string name="min_temperature">Temperatura Mínima</string>
+    <string name="location_error">Erro ao obter a sua localização. Certifique-se de que a localização está ativada e tente novamente em alguns segundos.</string>
 </resources>

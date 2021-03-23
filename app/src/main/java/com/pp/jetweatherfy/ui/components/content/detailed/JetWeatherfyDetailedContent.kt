@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun JetWeatherfyDetailedContent(
+    modifier: Modifier = Modifier,
     viewModel: ForecastViewModel,
     isActive: Boolean,
     forecast: Forecast?,
@@ -66,29 +67,31 @@ fun JetWeatherfyDetailedContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MediumDimension)
     ) {
-        DetailedContentDetails(
-            modifier = Modifier
-                .offset(x = firstTileValue)
-                .alpha(alphaValue),
-            selectedDailyForecast = selectedDailyForecast,
-            hourlyForecastsScrollState = hourlyForecastsScrollState,
-            weatherUnit = weatherUnit
-        )
-        DetailedContentDays(
-            modifier = Modifier
-                .offset(x = secondTileValue)
-                .alpha(alphaValue),
-            dailyForecasts = forecast?.dailyForecasts ?: listOf(),
-            selectedDailyForecast = selectedDailyForecast,
-            onDailyForecastSelected = { index, newSelectedDailyForecast ->
-                viewModel.selectDailyForecast(newSelectedDailyForecast)
-                coroutineScope.launch {
-                    dailyForecastsScrollState.animateScrollToItem(index)
-                    hourlyForecastsScrollState.animateScrollToItem(0)
-                }
-            },
-            weatherUnit = weatherUnit,
-            dailyForecastsScrollState = dailyForecastsScrollState
-        )
+        if (isActive || alphaValue > .15f) {
+            DetailedContentDetails(
+                modifier = modifier
+                    .offset(x = firstTileValue)
+                    .alpha(alphaValue),
+                selectedDailyForecast = selectedDailyForecast,
+                hourlyForecastsScrollState = hourlyForecastsScrollState,
+                weatherUnit = weatherUnit
+            )
+            DetailedContentDays(
+                modifier = Modifier
+                    .offset(x = secondTileValue)
+                    .alpha(alphaValue),
+                dailyForecasts = forecast?.dailyForecasts ?: listOf(),
+                selectedDailyForecast = selectedDailyForecast,
+                onDailyForecastSelected = { index, newSelectedDailyForecast ->
+                    viewModel.selectDailyForecast(newSelectedDailyForecast)
+                    coroutineScope.launch {
+                        dailyForecastsScrollState.animateScrollToItem(index)
+                        hourlyForecastsScrollState.animateScrollToItem(0)
+                    }
+                },
+                weatherUnit = weatherUnit,
+                dailyForecastsScrollState = dailyForecastsScrollState
+            )
+        }
     }
 }

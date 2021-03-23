@@ -25,6 +25,8 @@ import com.pp.jetweatherfy.domain.ContentState
 import com.pp.jetweatherfy.domain.ContentState.Simple
 import com.pp.jetweatherfy.domain.JetWeatherfyState
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Idle
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
+import com.pp.jetweatherfy.domain.JetWeatherfyState.LocationError
 import com.pp.jetweatherfy.domain.JetWeatherfyState.Running
 import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.domain.models.DailyForecast
@@ -63,7 +65,17 @@ class ForecastViewModel @Inject constructor(
     val weatherUnit: LiveData<WeatherUnit> = _weatherUnit
 
     fun setState(newState: JetWeatherfyState) = viewModelScope.launch {
-        _state.postValue(newState)
+        if (newState == LocationError) {
+            val previousState = state.value
+            _state.postValue(newState)
+            delay(3000L)
+
+            _state.postValue(
+                if (!searchQuery.value.isNullOrBlank()) Running else Idle
+            )
+        } else {
+            _state.postValue(newState)
+        }
     }
 
     fun setContentState(state: ContentState) = viewModelScope.launch {

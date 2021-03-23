@@ -18,5 +18,6 @@ package com.pp.jetweatherfy.domain
 enum class JetWeatherfyState {
     Running,
     Loading,
-    Idle
+    Idle,
+    LocationError
 }

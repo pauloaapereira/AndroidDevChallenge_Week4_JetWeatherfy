@@ -24,39 +24,58 @@ import com.pp.jetweatherfy.data.city.FakeCityDao
 import com.pp.jetweatherfy.data.forecast.FakeForecastDao
 import com.pp.jetweatherfy.data.forecast.ForecastRepository
 import com.pp.jetweatherfy.domain.ContentState
+import com.pp.jetweatherfy.domain.ContentState.Simple
 import com.pp.jetweatherfy.domain.JetWeatherfyState
+import com.pp.jetweatherfy.domain.JetWeatherfyState.Loading
+import com.pp.jetweatherfy.domain.WeatherUnit
 import com.pp.jetweatherfy.ui.ForecastViewModel
 import com.pp.jetweatherfy.ui.MainActivity
-import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBar
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContent
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContentTestHelper.DetailedContent
+import com.pp.jetweatherfy.ui.components.content.JetWeatherfyContentTestHelper.SimpleContent
+import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBarTestHelper.getTestTag
 import com.pp.jetweatherfy.ui.theme.JetWeatherfyTheme
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import org.junit.Rule
 import org.junit.Test
 
-class TopBarTest {
+@ExperimentalComposeUiApi
+@ExperimentalAnimationApi
+class JetWeatherfyContentTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @ExperimentalComposeUiApi
-    @ExperimentalAnimationApi
-    @Test
-    fun actions_hidden_when_loading() {
+    private val viewModel: ForecastViewModel by lazy {
+        ForecastViewModel(
+            ForecastRepository(FakeForecastDao()),
+            CityRepository(FakeCityDao())
+        )
+    }
+
+    private fun startApp(
+        state: JetWeatherfyState,
+        contentState: ContentState = Simple,
+        weatherUnit: WeatherUnit = WeatherUnit.METRIC
+    ) {
         composeTestRule.setContent {
             JetWeatherfyTheme {
                 ProvideWindowInsets {
-                    JetWeatherfyTopBar(
-                        viewModel = ForecastViewModel(
-                            ForecastRepository(FakeForecastDao()),
-                            CityRepository(FakeCityDao())
-                        ),
-                        state = JetWeatherfyState.Loading,
-                        contentState = ContentState.Simple,
-                        onSetMyLocationClick = { }
+                    JetWeatherfyContent(
+                        viewModel = viewModel,
+                        state = state,
+                        contentState = contentState,
+                        weatherUnit = weatherUnit
                     )
                 }
             }
         }
-        composeTestRule.onNodeWithTag("AppLogo").assertExists()
+    }
+
+    @Test
+    fun content_hidden_when_loading() {
+        startApp(Loading)
+        composeTestRule.onNodeWithTag(getTestTag(SimpleContent)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(getTestTag(DetailedContent)).assertDoesNotExist()
     }
 }
