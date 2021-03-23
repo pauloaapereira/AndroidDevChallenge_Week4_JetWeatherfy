@@ -15,15 +15,17 @@
  */
 package com.pp.jetweatherfy
 
+import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.core.app.ActivityScenario
 import com.pp.jetweatherfy.data.city.CityRepository
 import com.pp.jetweatherfy.data.city.FakeCityDao
 import com.pp.jetweatherfy.data.forecast.FakeForecastDao
@@ -46,6 +48,8 @@ import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBarTestHelper.Wea
 import com.pp.jetweatherfy.ui.components.topbar.JetWeatherfyTopBarTestHelper.getTestTag
 import com.pp.jetweatherfy.ui.theme.JetWeatherfyTheme
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -54,22 +58,36 @@ import org.junit.Test
 class JetWeatherfyTopBarTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createEmptyComposeRule()
+
+    private lateinit var scenario: ActivityScenario<MainActivity>
+
+    @Before
+    fun setUp() {
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+    }
+
+    @After
+    fun tearDown() {
+        scenario.close()
+    }
 
     private fun startApp(state: JetWeatherfyState) {
-        composeTestRule.setContent {
-            JetWeatherfyTheme {
-                ProvideWindowInsets {
-                    JetWeatherfyTopBar(
-                        viewModel = ForecastViewModel(
-                            ForecastRepository(FakeForecastDao()),
-                            CityRepository(FakeCityDao())
-                        ),
-                        state = state,
-                        contentState = ContentState.Simple,
-                        weatherUnit = WeatherUnit.METRIC,
-                        onSetMyLocationClick = { }
-                    )
+        scenario.onActivity { activity ->
+            activity.setContent {
+                JetWeatherfyTheme {
+                    ProvideWindowInsets {
+                        JetWeatherfyTopBar(
+                            viewModel = ForecastViewModel(
+                                ForecastRepository(FakeForecastDao()),
+                                CityRepository(FakeCityDao())
+                            ),
+                            state = state,
+                            contentState = ContentState.Simple,
+                            weatherUnit = WeatherUnit.METRIC,
+                            onSetMyLocationClick = { }
+                        )
+                    }
                 }
             }
         }

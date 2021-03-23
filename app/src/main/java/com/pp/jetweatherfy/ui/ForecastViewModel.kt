@@ -66,7 +66,6 @@ class ForecastViewModel @Inject constructor(
 
     fun setState(newState: JetWeatherfyState) = viewModelScope.launch {
         if (newState == LocationError) {
-            val previousState = state.value
             _state.postValue(newState)
             delay(3000L)
 
