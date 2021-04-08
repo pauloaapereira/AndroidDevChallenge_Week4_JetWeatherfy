@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy
+package com.pp.jetweatherfy.presentation
 
 /*
 import androidx.compose.animation.ExperimentalAnimationApi

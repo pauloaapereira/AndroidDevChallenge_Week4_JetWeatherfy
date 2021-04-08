@@ -1,5 +1,6 @@
 import com.pp.jetweatherfy.buildsrc.Configs
 import com.pp.jetweatherfy.buildsrc.Libs
+import com.pp.jetweatherfy.buildsrc.Tests
 
 plugins {
     id 'com.android.library'
@@ -47,4 +48,6 @@ dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.core
 
+    testImplementation Tests.junit
+    testImplementation Libs.Coroutines.test
 }
