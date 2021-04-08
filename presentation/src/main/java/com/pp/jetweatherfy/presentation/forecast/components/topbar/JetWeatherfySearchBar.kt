@@ -32,6 +32,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -54,13 +55,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.presentation.R
 import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus
+import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus.HandlingErrors
 import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus.Loading
 import com.pp.jetweatherfy.presentation.theme.MediumDimension
 import com.pp.jetweatherfy.presentation.utils.hideKeyboard
 
 private val AutoCompleteBoxSize = TextFieldDefaults.MinHeight * 5
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun JetWeatherfySearchBar(
     modifier: Modifier = Modifier,
@@ -68,7 +70,6 @@ fun JetWeatherfySearchBar(
     query: String,
     cities: List<String>,
     viewStatus: ViewStatus,
-    hasLocationErrors: Boolean,
     onQueryTyping: (String) -> Unit,
     onItemSelected: (String) -> Unit
 ) {
@@ -107,7 +108,7 @@ fun JetWeatherfySearchBar(
         TextField(
             modifier = modifier,
             trailingIconModifier = trailingIconModifier,
-            isEnabled = viewStatus != Loading && !hasLocationErrors,
+            isEnabled = viewStatus != Loading && viewStatus != HandlingErrors,
             value = query,
             onFocusChanged = { isFocused -> isSearching = isFocused },
             onDone = { unFocus() },
@@ -153,11 +154,12 @@ private fun TextField(
             )
         },
         trailingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_clear),
-                contentDescription = stringResource(R.string.clear),
-                modifier = trailingIconModifier.clickable { onValueChange("") }
-            )
+            IconButton(modifier = trailingIconModifier, onClick = { if (isEnabled) onValueChange("") }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_clear),
+                    contentDescription = stringResource(R.string.clear)
+                )
+            }
         },
         textStyle = MaterialTheme.typography.subtitle1,
         singleLine = true,

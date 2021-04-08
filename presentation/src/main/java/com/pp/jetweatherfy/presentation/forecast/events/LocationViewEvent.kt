@@ -18,7 +18,6 @@ package com.pp.jetweatherfy.presentation.forecast.events
 sealed class LocationViewEvent {
     data class SearchCities(val query: String) : LocationViewEvent()
     data class SetLocation(val location: String) : LocationViewEvent()
-    object RequestLocation : LocationViewEvent()
     object LocationError : LocationViewEvent()
     object PermissionsError : LocationViewEvent()
 }

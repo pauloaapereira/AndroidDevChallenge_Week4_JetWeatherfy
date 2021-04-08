@@ -15,7 +15,6 @@
  */
 package com.pp.jetweatherfy.presentation.forecast.components.topbar
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
@@ -57,7 +56,6 @@ import com.pp.jetweatherfy.presentation.theme.MediumDimension
 import com.pp.jetweatherfy.presentation.theme.SmallDimension
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
-@ExperimentalAnimationApi
 @Composable
 fun JetWeatherfyTopBar(
     forecastState: ForecastViewState,
@@ -90,7 +88,6 @@ fun JetWeatherfyTopBar(
             query = locationState.query,
             cities = locationState.cities,
             viewStatus = forecastState.viewStatus,
-            hasLocationErrors = locationState.errorGettingLocation,
             onQueryTyping = { onQueryTyping(it) },
             onItemSelected = { onCitySelected(it) }
         )

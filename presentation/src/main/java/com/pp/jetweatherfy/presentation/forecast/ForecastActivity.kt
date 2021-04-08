@@ -17,13 +17,10 @@ package com.pp.jetweatherfy.presentation.forecast
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
@@ -35,50 +32,45 @@ import com.pp.jetweatherfy.presentation.navigation.NavigationManager
 import com.pp.jetweatherfy.presentation.theme.JetWeatherfyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ForecastActivity : LocationActivity() {
 
-    private val viewModel: ForecastViewModel by viewModels()
+    private var forecastViewModel: ForecastViewModel? = null
 
-    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             JetWeatherfyTheme {
                 ProvideWindowInsets {
-                    App()
-                }
-            }
-        }
+                    App(
+                        onLocationRequested = { viewModel ->
+                            if (forecastViewModel == null)
+                                forecastViewModel = viewModel
 
-        lifecycleScope.launch {
-            viewModel.requestingLocation.collectLatest { isRequestingLocation ->
-                if (isRequestingLocation) {
-                    getLocation()
+                            getLocation()
+                        }
+                    )
                 }
             }
         }
     }
 
     override fun onLocationSuccess(cityName: String) {
-        viewModel.onLocationEvent(LocationViewEvent.SetLocation(cityName))
+        forecastViewModel?.onLocationEvent(LocationViewEvent.SetLocation(cityName))
     }
 
     override fun onLocationFailure() {
-        viewModel.onLocationEvent(LocationViewEvent.LocationError)
+        forecastViewModel?.onLocationEvent(LocationViewEvent.LocationError)
     }
 
     override fun onLocationRequestCanceled() {
-        viewModel.onLocationEvent(LocationViewEvent.PermissionsError)
+        forecastViewModel?.onLocationEvent(LocationViewEvent.PermissionsError)
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
-fun App() {
+fun App(onLocationRequested: (ForecastViewModel) -> Unit = {}) {
     val navController = rememberNavController()
 
     NavigationManager.command.collectAsState().value.also { command ->
@@ -92,14 +84,12 @@ fun App() {
         startDestination = NavigationDirections.Forecast.destination
     ) {
         composable(NavigationDirections.Forecast.destination) { backStackEntry ->
-            val viewModel =
-                hiltNavGraphViewModel<ForecastViewModel>(backStackEntry = backStackEntry)
-            ForecastScreen(viewModel)
+            val viewModel = hiltNavGraphViewModel<ForecastViewModel>(backStackEntry = backStackEntry)
+            ForecastScreen(viewModel, onLocationRequested = { onLocationRequested(viewModel) })
         }
     }
 }
 
-@ExperimentalAnimationApi
 @Preview
 @Composable
 fun AppLightPreview() {
@@ -110,7 +100,6 @@ fun AppLightPreview() {
     }
 }
 
-@ExperimentalAnimationApi
 @Preview
 @Composable
 fun AppDarkPreview() {

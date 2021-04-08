@@ -15,22 +15,23 @@
  */
 package com.pp.jetweatherfy.presentation.forecast
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.pp.jetweatherfy.presentation.forecast.components.content.JetWeatherfyContent
 import com.pp.jetweatherfy.presentation.forecast.components.surface.JetWeatherfySurface
 import com.pp.jetweatherfy.presentation.forecast.components.topbar.JetWeatherfyTopBar
-import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent
-import com.pp.jetweatherfy.presentation.forecast.events.LocationViewEvent
+import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent.SetSelectedDailyForecast
+import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent.SetViewType
+import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent.SetWeatherUnit
+import com.pp.jetweatherfy.presentation.forecast.events.LocationViewEvent.SearchCities
+import com.pp.jetweatherfy.presentation.forecast.events.LocationViewEvent.SetLocation
 import com.pp.jetweatherfy.presentation.forecast.state.ForecastViewState
 import com.pp.jetweatherfy.presentation.forecast.state.LocationViewState
 import com.pp.jetweatherfy.presentation.forecast.state.ViewType.Detailed
 
-@ExperimentalAnimationApi
 @Composable
-fun ForecastScreen(viewModel: ForecastViewModel) {
+fun ForecastScreen(viewModel: ForecastViewModel, onLocationRequested: () -> Unit) {
     val forecastViewState by viewModel.forecastViewState.collectAsState(ForecastViewState())
     val locationViewState by viewModel.locationViewState.collectAsState(LocationViewState())
 
@@ -39,28 +40,28 @@ fun ForecastScreen(viewModel: ForecastViewModel) {
             forecastState = forecastViewState,
             locationState = locationViewState,
             onWeatherUnitToggled = { weatherUnit ->
-                viewModel.onForecastEvent(ForecastViewEvent.SetWeatherUnit(weatherUnit))
+                viewModel.onForecastEvent(SetWeatherUnit(weatherUnit))
             },
             onViewTypeToggled = { viewType ->
-                viewModel.onForecastEvent(ForecastViewEvent.SetViewType(viewType))
+                viewModel.onForecastEvent(SetViewType(viewType))
             },
             onSetLocationClick = {
-                viewModel.onLocationEvent(LocationViewEvent.RequestLocation)
+                onLocationRequested()
             },
             onQueryTyping = { query ->
-                viewModel.onLocationEvent(LocationViewEvent.SearchCities(query))
+                viewModel.onLocationEvent(SearchCities(query))
             },
             onCitySelected = { city ->
-                viewModel.onLocationEvent(LocationViewEvent.SetLocation(city))
+                viewModel.onLocationEvent(SetLocation(city))
             }
         )
         JetWeatherfyContent(
             forecastState = forecastViewState,
             onDailyForecastSelected = { dailyForecast ->
-                viewModel.onForecastEvent(ForecastViewEvent.SetSelectedDailyForecast(dailyForecast))
+                viewModel.onForecastEvent(SetSelectedDailyForecast(dailyForecast))
             },
             onSeeMoreClick = {
-                viewModel.onForecastEvent(ForecastViewEvent.SetViewType(Detailed))
+                viewModel.onForecastEvent(SetViewType(Detailed))
             }
         )
     }

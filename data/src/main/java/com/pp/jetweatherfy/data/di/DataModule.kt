@@ -15,10 +15,6 @@
  */
 package com.pp.jetweatherfy.data.di
 
-import com.pp.jetweatherfy.data.city.CityDao
-import com.pp.jetweatherfy.data.city.FakeCityDao
-import com.pp.jetweatherfy.data.forecast.FakeForecastDao
-import com.pp.jetweatherfy.data.forecast.ForecastDao
 import com.pp.jetweatherfy.data.repositories.CityRepository
 import com.pp.jetweatherfy.data.repositories.ForecastRepository
 import com.pp.jetweatherfy.domain.repositories.cities.ICityRepository
@@ -44,5 +40,4 @@ interface DataModule {
     fun bindCityRepository(
         cityRepository: CityRepository
     ): ICityRepository
-
 }
