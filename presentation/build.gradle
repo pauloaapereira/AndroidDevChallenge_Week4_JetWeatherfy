@@ -1,11 +1,12 @@
 import com.pp.jetweatherfy.buildsrc.Compose
-import com.pp.jetweatherfy.buildsrc.Configs
 import com.pp.jetweatherfy.buildsrc.Core
-import com.pp.jetweatherfy.buildsrc.Libs
 import com.pp.jetweatherfy.buildsrc.Tests
+import com.pp.jetweatherfy.buildsrc.Libs
+import com.pp.jetweatherfy.buildsrc.Configs
+import com.pp.jetweatherfy.buildsrc.Libs
 
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
@@ -15,23 +16,13 @@ android {
     compileSdkVersion Configs.CompileSdkVersion
 
     defaultConfig {
-        applicationId "com.pp.jetweatherfy"
         minSdkVersion Configs.MinSdkVersion
         targetSdkVersion Configs.TargetSdkVersion
         versionCode Configs.VersionCode
         versionName Configs.VersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    signingConfigs {
-        // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
-        debug {
-            storeFile rootProject.file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     compileOptions {
@@ -39,18 +30,23 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    buildFeatures {
+        compose true
+
+        // Disable unused AGP features
+        buildConfig false
+        aidl false
+        renderScript false
+        resValues false
+        shaders false
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Compose.composeVersion
     }
 
     packagingOptions {
@@ -59,16 +55,17 @@ android {
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
     }
+
 }
 
 dependencies {
-    implementation project(':presentation')
     implementation project(':domain')
-    implementation project(':data')
 
     implementation Core.androidXCore
     implementation Core.appCompat
     implementation Core.material
+    implementation Libs.Kotlin.stdlib
+    implementation Libs.Coroutines.core
 
     implementation Compose.activityCompose
     implementation Compose.ui
@@ -82,15 +79,11 @@ dependencies {
     implementation Libs.Accompanist.insets
     implementation Libs.GoogleLocation.location
 
-    implementation Libs.Kotlin.stdlib
-    implementation Libs.Coroutines.android
-
-    implementation Libs.Hilt.library
-    kapt Libs.Hilt.googleAndroidCompiler
-    kapt Libs.Hilt.googleCompiler
-
     androidTestImplementation Tests.junit
     androidTestImplementation Tests.junitKotlin
     androidTestImplementation Compose.uiTest
 
+    implementation Libs.Hilt.library
+    kapt Libs.Hilt.googleAndroidCompiler
+    kapt Libs.Hilt.googleCompiler
 }

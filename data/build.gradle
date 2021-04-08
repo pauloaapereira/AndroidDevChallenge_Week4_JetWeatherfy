@@ -1,0 +1,49 @@
+import com.pp.jetweatherfy.buildsrc.Configs
+import com.pp.jetweatherfy.buildsrc.Libs
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    compileSdkVersion Configs.CompileSdkVersion
+
+    defaultConfig {
+        minSdkVersion Configs.MinSdkVersion
+        targetSdkVersion Configs.TargetSdkVersion
+        versionCode Configs.VersionCode
+        versionName Configs.VersionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    packagingOptions {
+        // Multiple dependency bring these files in. Exclude them to enable
+        // our test APK to build (has no effect on our AARs)
+        excludes += "/META-INF/AL2.0"
+        excludes += "/META-INF/LGPL2.1"
+    }
+}
+
+dependencies {
+    implementation project(':domain')
+
+    implementation Libs.Hilt.library
+    kapt Libs.Hilt.googleAndroidCompiler
+    kapt Libs.Hilt.googleCompiler
+    
+    implementation Libs.DateTime.jodaTime
+}

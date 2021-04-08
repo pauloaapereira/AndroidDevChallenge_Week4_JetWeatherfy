@@ -10,7 +10,7 @@ object Configs {
 }
 
 object ClassPaths {
-    const val gradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha12"
+    const val gradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha14"
     const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31"
 }
 
@@ -42,4 +42,44 @@ object Core {
     const val androidXCore = "androidx.core:core-ktx:1.3.2"
     const val appCompat = "androidx.appcompat:appcompat:1.3.0-rc01"
     const val material = "com.google.android.material:material:1.3.0"
+}
+
+object Libs {
+
+    object Kotlin {
+        const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31"
+    }
+
+    object Coroutines {
+        private const val version = "1.4.2"
+        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
+        const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
+    }
+
+    object DateTime {
+        const val jodaTime = "net.danlew:android.joda:2.10.9.1"
+    }
+
+    object Lottie {
+        const val lottie = "com.airbnb.android:lottie-compose:1.0.0-alpha07-SNAPSHOT"
+    }
+
+    object Accompanist {
+        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:0.6.2"
+    }
+
+    object GoogleLocation {
+        const val location = "com.google.android.gms:play-services-location:18.0.0"
+    }
+
+    object Hilt {
+        private const val version = "2.33-beta"
+        const val library = "com.google.dagger:hilt-android:$version"
+        const val googleAndroidCompiler = "com.google.dagger:hilt-android-compiler:$version"
+        const val googleCompiler = "com.google.dagger:hilt-compiler:$version"
+        const val testing = "com.google.dagger:hilt-android-testing:$version"
+        const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
+    }
+
 }

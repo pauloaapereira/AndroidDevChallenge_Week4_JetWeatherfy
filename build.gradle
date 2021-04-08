@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
+import com.pp.jetweatherfy.buildsrc.ClassPaths
+import com.pp.jetweatherfy.buildsrc.Libs
+
 buildscript {
-    ext {
-        kotlin_version = '1.4.31'
-        compose_version = '1.0.0-beta02'
-        coroutines_version = '1.4.2'
-        dagger_hilt_version = '2.33-beta'
-        androidX_hilt_version = '1.0.0-beta01'
-        androidX_hilt_test_version = '2.33-beta'
-        androidX_hilt_viewmodel_version = '1.0.0-alpha03'
-        retrofit_version = '2.9.0'
-    }
 
     repositories {
         google()
@@ -32,9 +25,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha12'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$dagger_hilt_version"
+        classpath ClassPaths.gradlePlugin
+        classpath ClassPaths.kotlinPlugin
+        classpath Libs.Hilt.gradlePlugin
     }
 }
 

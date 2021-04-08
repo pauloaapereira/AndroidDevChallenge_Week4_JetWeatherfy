@@ -1,2 +1,5 @@
 rootProject.name = "JetWeatherfy"
 include ':app'
+include ':data'
+include ':domain'
+include ':presentation'
