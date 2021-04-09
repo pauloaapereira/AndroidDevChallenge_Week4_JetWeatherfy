@@ -40,18 +40,5 @@ Feel free to support me and my new content on:
 <a href="https://www.paypal.com/donate?hosted_button_id=68Q9V7ZGGAW2W"><img alt="Paypal" src="https://badges.aleen42.com/src/paypal.svg"/></a> 
 
 ## License
-```
-Copyright 2021 Paulo Pereira
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    https://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+<a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
