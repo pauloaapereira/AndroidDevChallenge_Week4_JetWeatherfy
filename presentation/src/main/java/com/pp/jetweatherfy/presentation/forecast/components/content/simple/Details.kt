@@ -37,7 +37,7 @@ import com.pp.jetweatherfy.presentation.theme.MediumDimension
 import com.pp.jetweatherfy.presentation.utils.getWeatherResources
 
 @Composable
-fun SimpleContentDetails(
+internal fun Details(
     modifier: Modifier = Modifier,
     selectedDailyForecast: DailyForecast,
     weatherUnit: WeatherUnit

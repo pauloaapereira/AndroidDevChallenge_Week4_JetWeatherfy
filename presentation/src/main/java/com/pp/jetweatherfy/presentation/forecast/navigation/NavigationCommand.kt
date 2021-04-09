@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.presentation.navigation
+package com.pp.jetweatherfy.presentation.forecast.navigation
 
 import androidx.navigation.compose.NamedNavArgument
 
-object NavigationDirections {
+interface NavigationCommand {
+    val arguments: List<NamedNavArgument>
+    val destination: String
 
-    val Forecast = object : NavigationCommand {
-        override val arguments = emptyList<NamedNavArgument>()
-
-        override val destination: String = "forecast"
+    companion object {
+        val Default = object : NavigationCommand {
+            override val arguments = emptyList<NamedNavArgument>()
+            override val destination = ""
+        }
     }
 }

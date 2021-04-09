@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.domain.model.DailyForecast
 import com.pp.jetweatherfy.domain.model.HourlyForecast
 import com.pp.jetweatherfy.presentation.R
-import com.pp.jetweatherfy.presentation.forecast.components.content.UnselectedAlpha
 import com.pp.jetweatherfy.presentation.forecast.components.utils.WeatherAnimation
 import com.pp.jetweatherfy.presentation.forecast.components.utils.WeatherTemperature
 import com.pp.jetweatherfy.presentation.forecast.components.utils.WeatherWindAndPrecipitation
@@ -46,12 +45,13 @@ import com.pp.jetweatherfy.presentation.forecast.state.WeatherUnit
 import com.pp.jetweatherfy.presentation.theme.BigDimension
 import com.pp.jetweatherfy.presentation.theme.MediumDimension
 import com.pp.jetweatherfy.presentation.theme.SmallDimension
+import com.pp.jetweatherfy.presentation.utils.UnselectedAlpha
 import com.pp.jetweatherfy.presentation.utils.generateColorBasedOnForecast
 import com.pp.jetweatherfy.presentation.utils.getFormattedTime
 import com.pp.jetweatherfy.presentation.utils.getWeatherResources
 
 @Composable
-fun DetailedContentDetails(
+internal fun Details(
     modifier: Modifier = Modifier,
     hourlyForecastsScrollState: LazyListState,
     selectedDailyForecast: DailyForecast,

@@ -18,7 +18,3 @@ package com.pp.jetweatherfy.domain
 const val MaxTemperature = 35
 const val MaxWindSpeed = 40
 const val MaxPrecipitation = 100
-const val DailyTimestampFormat = "E, d MMM"
-const val HourlyTimestampFormat = "K:mm a"
-
-const val AnimationDuration = 1000

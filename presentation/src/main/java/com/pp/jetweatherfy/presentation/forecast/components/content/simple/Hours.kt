@@ -32,15 +32,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.domain.model.HourlyForecast
-import com.pp.jetweatherfy.presentation.forecast.components.content.UnselectedAlpha
 import com.pp.jetweatherfy.presentation.forecast.components.utils.WeatherAnimation
 import com.pp.jetweatherfy.presentation.forecast.components.utils.WeatherTemperature
 import com.pp.jetweatherfy.presentation.forecast.state.WeatherUnit
 import com.pp.jetweatherfy.presentation.theme.MediumDimension
+import com.pp.jetweatherfy.presentation.utils.UnselectedAlpha
 import com.pp.jetweatherfy.presentation.utils.getFormattedTime
 
 @Composable
-fun SimpleContentHours(
+internal fun Hours(
     modifier: Modifier = Modifier,
     scrollState: LazyListState,
     hourlyForecasts: List<HourlyForecast>,

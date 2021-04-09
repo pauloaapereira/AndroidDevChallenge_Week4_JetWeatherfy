@@ -41,7 +41,6 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.pp.jetweatherfy.domain.model.DailyForecast
 import com.pp.jetweatherfy.presentation.R
 import com.pp.jetweatherfy.presentation.forecast.components.content.JetWeatherfyContentTestHelper.DetailedContent
@@ -49,8 +48,8 @@ import com.pp.jetweatherfy.presentation.forecast.components.content.JetWeatherfy
 import com.pp.jetweatherfy.presentation.forecast.components.content.JetWeatherfyContentTestHelper.DetectingLocationError
 import com.pp.jetweatherfy.presentation.forecast.components.content.JetWeatherfyContentTestHelper.NoCity
 import com.pp.jetweatherfy.presentation.forecast.components.content.JetWeatherfyContentTestHelper.SimpleContent
-import com.pp.jetweatherfy.presentation.forecast.components.content.detailed.JetWeatherfyDetailedContent
-import com.pp.jetweatherfy.presentation.forecast.components.content.simple.JetWeatherfySimpleContent
+import com.pp.jetweatherfy.presentation.forecast.components.content.detailed.ForecastDetailedView
+import com.pp.jetweatherfy.presentation.forecast.components.content.simple.ForecastSimpleView
 import com.pp.jetweatherfy.presentation.forecast.state.ForecastViewState
 import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus.HandlingErrors
 import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus.Idle
@@ -61,16 +60,13 @@ import com.pp.jetweatherfy.presentation.forecast.state.ViewType.Simple
 import com.pp.jetweatherfy.presentation.theme.BigDimension
 import com.pp.jetweatherfy.presentation.theme.MediumDimension
 import com.pp.jetweatherfy.presentation.theme.SmallDimension
+import com.pp.jetweatherfy.presentation.utils.AnimationDuration
+import com.pp.jetweatherfy.presentation.utils.AnimationEndOffset
+import com.pp.jetweatherfy.presentation.utils.AnimationStartOffset
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
-const val SelectedAlpha = 0.25f
-const val UnselectedAlpha = 0.1f
-const val AnimationDuration = 1000
-val AnimationStartOffset = 400.dp
-val AnimationEndOffset = 0.dp
-
 @Composable
-fun JetWeatherfyContent(
+fun ForecastContent(
     forecastState: ForecastViewState,
     onSeeMoreClick: () -> Unit,
     onDailyForecastSelected: (DailyForecast) -> Unit
@@ -115,7 +111,7 @@ fun JetWeatherfyContent(
             .padding(top = SmallDimension, start = MediumDimension, end = MediumDimension)
             .navigationBarsPadding(left = false, right = false)
     ) {
-        JetWeatherfySimpleContent(
+        ForecastSimpleView(
             modifier = Modifier.setTestTag(SimpleContent),
             isActive = forecastState.viewStatus == Running && forecastState.viewType == Simple,
             forecast = forecastState.forecast,
@@ -124,7 +120,7 @@ fun JetWeatherfyContent(
             onDailyForecastSelected = onDailyForecastSelected,
             onSeeMoreClick = onSeeMoreClick
         )
-        JetWeatherfyDetailedContent(
+        ForecastDetailedView(
             modifier = Modifier.setTestTag(DetailedContent),
             isActive = forecastState.viewStatus == Running && forecastState.viewType == Detailed,
             forecast = forecastState.forecast,

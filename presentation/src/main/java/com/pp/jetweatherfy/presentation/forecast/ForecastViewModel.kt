@@ -23,7 +23,6 @@ import com.pp.jetweatherfy.domain.model.Forecast
 import com.pp.jetweatherfy.domain.usecases.cities.AddCity
 import com.pp.jetweatherfy.domain.usecases.cities.FetchCities
 import com.pp.jetweatherfy.domain.usecases.forecast.FetchForecast
-import com.pp.jetweatherfy.presentation.forecast.components.content.AnimationDuration
 import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent
 import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent.GetForecast
 import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent.SetSelectedDailyForecast
@@ -40,6 +39,7 @@ import com.pp.jetweatherfy.presentation.forecast.state.LocationViewState
 import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus.HandlingErrors
 import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus.Idle
 import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus.Running
+import com.pp.jetweatherfy.presentation.utils.AnimationDuration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

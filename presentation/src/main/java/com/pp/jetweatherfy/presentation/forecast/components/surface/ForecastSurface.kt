@@ -24,19 +24,22 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.pp.jetweatherfy.domain.model.DailyForecast
+import com.pp.jetweatherfy.presentation.utils.BackgroundAnimationDuration
 import com.pp.jetweatherfy.presentation.utils.generateColorBasedOnForecast
 import com.pp.jetweatherfy.presentation.utils.generateGradientFeel
 
 @Composable
-fun JetWeatherfySurface(selectedDailyForecast: DailyForecast, content: @Composable () -> Unit) {
+fun ForecastSurface(selectedDailyForecast: DailyForecast, content: @Composable () -> Unit) {
     val backgroundColorFeel by animateColorAsState(
         targetValue = selectedDailyForecast.generateColorBasedOnForecast(),
-        animationSpec = tween(400)
+        animationSpec = tween(BackgroundAnimationDuration)
     )
 
     Surface(
         modifier = Modifier
+            .testTag("ForecastSurface")
             .fillMaxSize()
             .background(generateGradientFeel(backgroundColorFeel)),
     ) {

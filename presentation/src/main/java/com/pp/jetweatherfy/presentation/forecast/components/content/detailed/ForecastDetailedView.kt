@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.presentation.forecast.components.content.simple
+package com.pp.jetweatherfy.presentation.forecast.components.content.detailed
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,43 +31,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.pp.jetweatherfy.domain.model.DailyForecast
 import com.pp.jetweatherfy.domain.model.Forecast
-import com.pp.jetweatherfy.presentation.forecast.components.content.AnimationDuration
 import com.pp.jetweatherfy.presentation.forecast.components.content.contentOffsetTransition
 import com.pp.jetweatherfy.presentation.forecast.state.WeatherUnit
-import com.pp.jetweatherfy.presentation.theme.BigDimension
 import com.pp.jetweatherfy.presentation.theme.MediumDimension
-import com.pp.jetweatherfy.presentation.utils.generateColorBasedOnForecast
+import com.pp.jetweatherfy.presentation.utils.AnimationDuration
 import com.pp.jetweatherfy.presentation.utils.scrollToBegin
 import kotlinx.coroutines.launch
 
 @Composable
-fun JetWeatherfySimpleContent(
+fun ForecastDetailedView(
     modifier: Modifier = Modifier,
     isActive: Boolean,
     forecast: Forecast,
     selectedDailyForecast: DailyForecast,
     weatherUnit: WeatherUnit,
-    onSeeMoreClick: () -> Unit,
     onDailyForecastSelected: (DailyForecast) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val transition = updateTransition(targetState = isActive, label = "")
     val dailyForecastsScrollState = rememberLazyListState()
     val hourlyForecastsScrollState = rememberLazyListState()
-    val transition =
-        updateTransition(targetState = isActive, label = "JetWeatherfySimpleContentTransition")
+
+    val firstTileValue by contentOffsetTransition(transition = transition, inverseStart = true)
+    val secondTileValue by contentOffsetTransition(
+        transition = transition,
+        delay = 100,
+        inverseStart = true
+    )
+    val alphaValue by transition.animateFloat(
+        transitionSpec = { tween(AnimationDuration) },
+        label = ""
+    ) { active -> if (active) 1f else 0f }
 
     if (!isActive) {
         dailyForecastsScrollState.scrollToBegin(coroutineScope)
         hourlyForecastsScrollState.scrollToBegin(coroutineScope)
     }
-
-    val firstTileValue by contentOffsetTransition(transition = transition)
-    val secondTileValue by contentOffsetTransition(transition = transition, delay = 100)
-    val thirdTileValue by contentOffsetTransition(transition = transition, delay = 200)
-    val alphaValue by transition.animateFloat(
-        transitionSpec = { tween(AnimationDuration) },
-        label = ""
-    ) { active -> if (active) 1f else 0f }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -76,38 +74,29 @@ fun JetWeatherfySimpleContent(
         verticalArrangement = Arrangement.spacedBy(MediumDimension)
     ) {
         if (isActive || alphaValue > .15f) {
-            SimpleContentDetails(
+            Details(
                 modifier = modifier
                     .offset(x = firstTileValue)
                     .alpha(alphaValue),
                 selectedDailyForecast = selectedDailyForecast,
+                hourlyForecastsScrollState = hourlyForecastsScrollState,
                 weatherUnit = weatherUnit
             )
-            SimpleContentDays(
+            Days(
                 modifier = Modifier
-                    .padding(top = BigDimension)
                     .offset(x = secondTileValue)
                     .alpha(alphaValue),
-                scrollState = dailyForecastsScrollState,
+                dailyForecasts = forecast.dailyForecasts,
                 selectedDailyForecast = selectedDailyForecast,
-                dailyForecasts = forecast.dailyForecasts.take(2),
-                onMoreClick = { onSeeMoreClick() },
                 onDailyForecastSelected = { index, newSelectedDailyForecast ->
                     onDailyForecastSelected(newSelectedDailyForecast)
                     coroutineScope.launch {
                         dailyForecastsScrollState.animateScrollToItem(index)
                         hourlyForecastsScrollState.animateScrollToItem(0)
                     }
-                }
-            )
-            SimpleContentHours(
-                modifier = Modifier
-                    .offset(x = thirdTileValue)
-                    .alpha(alphaValue),
-                scrollState = hourlyForecastsScrollState,
-                hourlyForecasts = selectedDailyForecast.hourlyForecasts,
-                surfaceColor = selectedDailyForecast.generateColorBasedOnForecast(),
-                weatherUnit = weatherUnit
+                },
+                weatherUnit = weatherUnit,
+                dailyForecastsScrollState = dailyForecastsScrollState
             )
         }
     }

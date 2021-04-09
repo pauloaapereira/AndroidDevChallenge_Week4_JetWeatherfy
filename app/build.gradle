@@ -39,6 +39,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
@@ -49,8 +53,19 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    buildFeatures {
+        compose true
+
+        // Disable unused AGP features
+        buildConfig false
+        aidl false
+        renderScript false
+        resValues false
+        shaders false
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Compose.composeVersion
     }
 
     packagingOptions {
@@ -92,5 +107,6 @@ dependencies {
     androidTestImplementation Tests.junit
     androidTestImplementation Tests.junitKotlin
     androidTestImplementation Compose.uiTest
+    androidTestImplementation Libs.Coroutines.test
 
 }

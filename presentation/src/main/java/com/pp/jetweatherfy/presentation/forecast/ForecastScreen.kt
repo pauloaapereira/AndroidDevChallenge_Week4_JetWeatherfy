@@ -18,9 +18,9 @@ package com.pp.jetweatherfy.presentation.forecast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.pp.jetweatherfy.presentation.forecast.components.content.JetWeatherfyContent
-import com.pp.jetweatherfy.presentation.forecast.components.surface.JetWeatherfySurface
-import com.pp.jetweatherfy.presentation.forecast.components.topbar.JetWeatherfyTopBar
+import com.pp.jetweatherfy.presentation.forecast.components.content.ForecastContent
+import com.pp.jetweatherfy.presentation.forecast.components.surface.ForecastSurface
+import com.pp.jetweatherfy.presentation.forecast.components.topbar.ForecastTopBar
 import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent.SetSelectedDailyForecast
 import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent.SetViewType
 import com.pp.jetweatherfy.presentation.forecast.events.ForecastViewEvent.SetWeatherUnit
@@ -35,8 +35,8 @@ fun ForecastScreen(viewModel: ForecastViewModel, onLocationRequested: () -> Unit
     val forecastViewState by viewModel.forecastViewState.collectAsState(ForecastViewState())
     val locationViewState by viewModel.locationViewState.collectAsState(LocationViewState())
 
-    JetWeatherfySurface(forecastViewState.selectedDailyForecast) {
-        JetWeatherfyTopBar(
+    ForecastSurface(forecastViewState.selectedDailyForecast) {
+        ForecastTopBar(
             forecastState = forecastViewState,
             locationState = locationViewState,
             onWeatherUnitToggled = { weatherUnit ->
@@ -55,7 +55,7 @@ fun ForecastScreen(viewModel: ForecastViewModel, onLocationRequested: () -> Unit
                 viewModel.onLocationEvent(SetLocation(city))
             }
         )
-        JetWeatherfyContent(
+        ForecastContent(
             forecastState = forecastViewState,
             onDailyForecastSelected = { dailyForecast ->
                 viewModel.onForecastEvent(SetSelectedDailyForecast(dailyForecast))

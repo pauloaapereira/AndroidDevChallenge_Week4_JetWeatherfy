@@ -79,10 +79,6 @@ dependencies {
     implementation Libs.Accompanist.insets
     implementation Libs.GoogleLocation.location
 
-    androidTestImplementation Tests.junit
-    androidTestImplementation Tests.junitKotlin
-    androidTestImplementation Compose.uiTest
-
     implementation Libs.Hilt.library
     kapt Libs.Hilt.googleAndroidCompiler
     kapt Libs.Hilt.googleCompiler

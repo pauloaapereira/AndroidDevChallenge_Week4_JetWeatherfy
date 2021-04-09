@@ -34,15 +34,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.pp.jetweatherfy.domain.model.DailyForecast
 import com.pp.jetweatherfy.presentation.R
-import com.pp.jetweatherfy.presentation.forecast.components.content.SelectedAlpha
-import com.pp.jetweatherfy.presentation.forecast.components.content.UnselectedAlpha
 import com.pp.jetweatherfy.presentation.theme.BigDimension
 import com.pp.jetweatherfy.presentation.theme.SmallDimension
+import com.pp.jetweatherfy.presentation.utils.SelectedAlpha
+import com.pp.jetweatherfy.presentation.utils.UnselectedAlpha
 import com.pp.jetweatherfy.presentation.utils.generateColorBasedOnForecast
 import com.pp.jetweatherfy.presentation.utils.getFormattedTime
 
 @Composable
-fun SimpleContentDays(
+internal fun Days(
     modifier: Modifier = Modifier,
     scrollState: LazyListState,
     selectedDailyForecast: DailyForecast,

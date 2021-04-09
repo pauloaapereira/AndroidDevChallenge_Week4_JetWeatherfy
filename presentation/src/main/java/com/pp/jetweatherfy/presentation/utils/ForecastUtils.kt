@@ -20,8 +20,6 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.pp.jetweatherfy.domain.DailyTimestampFormat
-import com.pp.jetweatherfy.domain.HourlyTimestampFormat
 import com.pp.jetweatherfy.domain.MaxPrecipitation
 import com.pp.jetweatherfy.domain.MaxTemperature
 import com.pp.jetweatherfy.domain.MaxWindSpeed
@@ -49,10 +47,10 @@ fun DailyForecast.getFormattedTime(): String {
     }
 }
 
-fun HourlyForecast.getFormattedTime() = LocalDateTime.parse(timestamp).toString(HourlyTimestampFormat)
-    .toUpperCase(Locale.getDefault())
+fun HourlyForecast.getFormattedTime() =
+    LocalDateTime.parse(timestamp).toString(HourlyTimestampFormat)
+        .toUpperCase(Locale.getDefault())
 
-@Composable
 fun DailyForecast.generateColorBasedOnForecast(): Color {
     return Color(
         red = (temperature * 255 / MaxTemperature.toFloat()) / 255f,

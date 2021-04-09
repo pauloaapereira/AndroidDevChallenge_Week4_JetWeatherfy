@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pp.jetweatherfy.presentation.base
+package com.pp.jetweatherfy.presentation.forecast.base
 
 import android.Manifest
 import android.annotation.SuppressLint

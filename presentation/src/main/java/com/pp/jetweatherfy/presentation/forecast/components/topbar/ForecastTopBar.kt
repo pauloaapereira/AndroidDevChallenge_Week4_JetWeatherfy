@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.pp.jetweatherfy.domain.AnimationDuration
 import com.pp.jetweatherfy.presentation.R
 import com.pp.jetweatherfy.presentation.forecast.state.ForecastViewState
 import com.pp.jetweatherfy.presentation.forecast.state.LocationViewState
@@ -54,10 +53,11 @@ import com.pp.jetweatherfy.presentation.forecast.state.WeatherUnit.Metric
 import com.pp.jetweatherfy.presentation.theme.BigDimension
 import com.pp.jetweatherfy.presentation.theme.MediumDimension
 import com.pp.jetweatherfy.presentation.theme.SmallDimension
+import com.pp.jetweatherfy.presentation.utils.AnimationDuration
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 @Composable
-fun JetWeatherfyTopBar(
+fun ForecastTopBar(
     forecastState: ForecastViewState,
     locationState: LocationViewState,
     onWeatherUnitToggled: (WeatherUnit) -> Unit,
@@ -84,7 +84,7 @@ fun JetWeatherfyTopBar(
             onViewTypeToggled = onViewTypeToggled,
             onSetLocationClick = onSetLocationClick
         )
-        JetWeatherfySearchBar(
+        ForecastSearchBar(
             query = locationState.query,
             cities = locationState.cities,
             viewStatus = forecastState.viewStatus,

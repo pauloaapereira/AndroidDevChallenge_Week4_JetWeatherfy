@@ -64,7 +64,7 @@ private val AutoCompleteBoxSize = TextFieldDefaults.MinHeight * 5
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun JetWeatherfySearchBar(
+fun ForecastSearchBar(
     modifier: Modifier = Modifier,
     trailingIconModifier: Modifier = Modifier,
     query: String,
@@ -154,7 +154,9 @@ private fun TextField(
             )
         },
         trailingIcon = {
-            IconButton(modifier = trailingIconModifier, onClick = { if (isEnabled) onValueChange("") }) {
+            IconButton(
+                modifier = trailingIconModifier,
+                onClick = { if (isEnabled) onValueChange("") }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_clear),
                     contentDescription = stringResource(R.string.clear)
