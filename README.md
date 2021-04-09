@@ -20,7 +20,7 @@ Since Jetpack Compose is a totally different way of thinking in terms of UI buil
 <img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
 
 ## Donation 💰
-If this project motivated you and taught you something, feel free to pay me a cup of coffee. :]
+If this project motivated you or taught you something, feel free to support me. :]
 
 <a href="https://www.buymeacoffee.com/ppereira" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
