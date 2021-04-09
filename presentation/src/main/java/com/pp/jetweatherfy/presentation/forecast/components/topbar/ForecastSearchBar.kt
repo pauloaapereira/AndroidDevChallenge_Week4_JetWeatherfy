@@ -156,7 +156,8 @@ private fun TextField(
         trailingIcon = {
             IconButton(
                 modifier = trailingIconModifier,
-                onClick = { if (isEnabled) onValueChange("") }) {
+                onClick = { if (isEnabled) onValueChange("") }
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_clear),
                     contentDescription = stringResource(R.string.clear)

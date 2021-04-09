@@ -91,5 +91,4 @@ class ForecastScreenTest {
         // Then
         assert(currentStatus == expectedViewStatus)
     }
-
 }
