@@ -22,6 +22,12 @@ Since Jetpack Compose is a totally different way of thinking in terms of UI buil
 <img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
 
 
+## MAD Score
+![image](https://user-images.githubusercontent.com/27347361/114248588-ef5aa400-998f-11eb-9fae-e46a90d745c6.png)
+![image](https://user-images.githubusercontent.com/27347361/114248605-fa153900-998f-11eb-8ff9-30d3e77ec851.png)
+
+
+
 ## Author
 
 <a href="https://twitter.com/pauloppereiraa"><img alt="Medium" src="https://badges.aleen42.com/src/twitter.svg"/></a>
