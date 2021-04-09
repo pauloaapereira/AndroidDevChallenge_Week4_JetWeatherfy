@@ -80,7 +80,6 @@ class ForecastScreenTest {
         }
     }
 
-    
     @Test
     fun forecast_screen_first_state_idle() = testScope.runBlockingTest {
         // Given
