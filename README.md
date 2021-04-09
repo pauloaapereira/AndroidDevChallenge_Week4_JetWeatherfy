@@ -9,7 +9,7 @@
 
 ## :scroll: Description
 <!--- Describe your app in one or two sentences -->
-This is a weather forecast application, developed according to the 4th Week of Android Dev Challenges with Jetpack Compose.
+This is a weather forecast application, using Fake data, developed according to the 4th Week of Android Dev Challenges with Jetpack Compose.
 
 ## :bulb: Motivation and Context
 <!--- Optionally point readers to interesting parts of your submission. -->
