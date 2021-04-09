@@ -77,13 +77,13 @@ private fun Hour(
             .background(surfaceColor)
             .padding(MediumDimension),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(text = hourlyForecast.getFormattedTime(), style = MaterialTheme.typography.subtitle2)
         WeatherAnimation(weather = hourlyForecast.weather, animationSize = 30.dp)
         WeatherTemperature(
             temperature = hourlyForecast.temperature,
-            temperatureStyle = MaterialTheme.typography.h2,
+            temperatureStyle = MaterialTheme.typography.subtitle1,
             weatherUnit = weatherUnit
         )
     }

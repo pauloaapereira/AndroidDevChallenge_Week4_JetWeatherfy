@@ -124,7 +124,7 @@ private fun DetailsExtraInformation(dailyForecast: DailyForecast) {
     ) {
         Text(
             text = stringResource(id = dailyForecast.weather.getWeatherResources().description),
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.body1
         )
         WeatherWindAndPrecipitation(
             text = "${dailyForecast.windSpeed} km/h",
