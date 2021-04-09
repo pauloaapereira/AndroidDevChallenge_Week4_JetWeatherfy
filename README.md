@@ -21,17 +21,23 @@ Since Jetpack Compose is a totally different way of thinking in terms of UI buil
 <!-- You can add more screenshots here if you like -->
 <img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
 
+
 ## Author
-So... Paulo is from Portugal and he's 23 years old. He has around 3y and half of work experience as an Android Developer, and has a lot of fun programming in Kotlin! He's also certified by Google as an Associate Android Developer. He is a person with good communication skills, easily adaptive to new environments and teams, and a little addicted to learning and self-improvement.
+
+<a href="https://twitter.com/pauloppereiraa"><img alt="Medium" src="https://badges.aleen42.com/src/twitter.svg"/></a>
+
+So... Paulo is from Portugal and he's 23 years old. 
+He has around 3y and half of work experience as an Android Developer, and has a lot of fun programming in Kotlin! He's also certified by Google as an Associate Android Developer. 
+He is a person with good communication skills, easily adaptive to new environments and teams, and a little addicted to learning and self-improvement.
 
 
 ## Find this repository useful? :]
 
 Feel free to support me and my new content on: 
 
-<a href="https://www.buymeacoffee.com/ppereira" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+<a href="https://www.buymeacoffee.com/ppereira"><img alt="BuyMeACoffee" src="https://badges.aleen42.com/src/buymeacoffee.svg"/></a> 
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=68Q9V7ZGGAW2W)
+<a href="https://www.paypal.com/donate?hosted_button_id=68Q9V7ZGGAW2W"><img alt="Paypal" src="https://badges.aleen42.com/src/paypal.svg"/></a> 
 
 ## License
 ```
