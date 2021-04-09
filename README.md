@@ -1,9 +1,11 @@
-# JetWeatherfy
+<h1 align="center">JetWeatherfy</h1>
 
-<!--- Replace <OWNER> with your Github Username and <REPOSITORY> with the name of your repository. -->
-<!--- You can find both of these in the url bar when you open your repository in github. -->
-![Workflow result](https://github.com/pauloaapereira/AndroidDevChallenge_Week4_JetWeatherfy/workflows/Check/badge.svg)
-
+<p align="center">
+  <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
+  <a href="https://github.com/pauloaapereira/AndroidDevChallenge_Week4_JetWeatherfy/actions"><img alt="Build Status" src="https://github.com/pauloaapereira/AndroidDevChallenge_Week4_JetWeatherfy/workflows/Check/badge.svg"/></a> 
+  <a href="https://pauloaapereira.medium.com/"><img alt="Medium" src="https://badges.aleen42.com/src/medium.svg"/></a>
+  <a href="https://github.com/pauloaapereira"><img alt="Profile" src="https://badges.aleen42.com/src/github.svg"/></a> 
+</p>
 
 ## :scroll: Description
 <!--- Describe your app in one or two sentences -->
@@ -19,8 +21,13 @@ Since Jetpack Compose is a totally different way of thinking in terms of UI buil
 <!-- You can add more screenshots here if you like -->
 <img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
 
-## Donation 💰
-If this project motivated you or taught you something, feel free to support me. :]
+## Author
+So... Paulo is from Portugal and he's 23 years old. He has around 3y and half of work experience as an Android Developer, and has a lot of fun programming in Kotlin! He's also certified by Google as an Associate Android Developer. He is a person with good communication skills, easily adaptive to new environments and teams, and a little addicted to learning and self-improvement.
+
+
+## Find this repository useful? :]
+
+Feel free to support me and my new content on: 
 
 <a href="https://www.buymeacoffee.com/ppereira" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
