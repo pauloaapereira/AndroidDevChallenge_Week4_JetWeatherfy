@@ -11,6 +11,12 @@
 <!--- Describe your app in one or two sentences -->
 This is a weather forecast application, using Fake data, developed according to the 4th Week of Android Dev Challenges with Jetpack Compose.
 
+Download an APK here!
+
+## Requirements
+ - Android Studio Artic Fox | 2020.3.1 Canary 15
+ - Gradle 7.0
+
 ## :bulb: Motivation and Context
 <!--- Optionally point readers to interesting parts of your submission. -->
 <!--- What are you especially proud of? -->
