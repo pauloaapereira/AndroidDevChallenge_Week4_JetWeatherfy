@@ -1,7 +1,5 @@
 import com.pp.jetweatherfy.buildsrc.Compose
 import com.pp.jetweatherfy.buildsrc.Core
-import com.pp.jetweatherfy.buildsrc.Tests
-import com.pp.jetweatherfy.buildsrc.Libs
 import com.pp.jetweatherfy.buildsrc.Configs
 import com.pp.jetweatherfy.buildsrc.Libs
 

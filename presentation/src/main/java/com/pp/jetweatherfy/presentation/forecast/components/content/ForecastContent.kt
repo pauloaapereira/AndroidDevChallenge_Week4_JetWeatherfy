@@ -41,6 +41,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import com.google.accompanist.insets.navigationBarsPadding
 import com.pp.jetweatherfy.domain.model.DailyForecast
 import com.pp.jetweatherfy.presentation.R
 import com.pp.jetweatherfy.presentation.forecast.components.content.JetWeatherfyContentTestHelper.DetailedContent
@@ -63,7 +64,6 @@ import com.pp.jetweatherfy.presentation.theme.SmallDimension
 import com.pp.jetweatherfy.presentation.utils.AnimationDuration
 import com.pp.jetweatherfy.presentation.utils.AnimationEndOffset
 import com.pp.jetweatherfy.presentation.utils.AnimationStartOffset
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun ForecastContent(

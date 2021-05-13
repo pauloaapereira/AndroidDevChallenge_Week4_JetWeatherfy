@@ -21,13 +21,14 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath ClassPaths.gradlePlugin
         classpath ClassPaths.kotlinPlugin
         classpath Libs.Hilt.gradlePlugin
+
     }
 }
 
@@ -38,8 +39,7 @@ plugins {
 subprojects {
     repositories {
         google()
-        jcenter()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
     }
 
     apply plugin: 'com.diffplug.spotless'
@@ -49,7 +49,7 @@ subprojects {
             targetExclude("$buildDir/**/*.kt")
             targetExclude('bin/**/*.kt')
 
-            ktlint("0.40.0")
+            ktlint("0.41.0")
             licenseHeaderFile rootProject.file('spotless/copyright.kt')
         }
     }

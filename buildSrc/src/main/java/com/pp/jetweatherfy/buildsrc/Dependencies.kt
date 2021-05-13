@@ -10,12 +10,12 @@ object Configs {
 }
 
 object ClassPaths {
-    const val gradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha14"
-    const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31"
+    const val gradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha15"
+    const val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32"
 }
 
 object Compose {
-    const val composeVersion = "1.0.0-beta03"
+    const val composeVersion = "1.0.0-beta06"
 
     const val animation = "androidx.compose.animation:animation:$composeVersion"
     const val iconsExtended = "androidx.compose.material:material-icons-extended:$composeVersion"
@@ -25,8 +25,8 @@ object Compose {
     const val ui = "androidx.compose.ui:ui:$composeVersion"
     const val uiUtil = "androidx.compose.ui:ui-util:$composeVersion"
     const val uiTest = "androidx.compose.ui:ui-test-junit4:$composeVersion"
-    const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha05"
-    const val navigationCompose = "androidx.navigation:navigation-compose:1.0.0-alpha09"
+    const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha07"
+    const val navigationCompose = "androidx.navigation:navigation-compose:1.0.0-alpha10"
     const val hiltNavigation = "androidx.hilt:hilt-navigation-compose:1.0.0-alpha01"
 }
 
@@ -47,11 +47,11 @@ object Core {
 object Libs {
 
     object Kotlin {
-        const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31"
+        const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.0"
     }
 
     object Coroutines {
-        private const val version = "1.4.2"
+        private const val version = "1.5.0-RC"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -62,11 +62,11 @@ object Libs {
     }
 
     object Lottie {
-        const val lottie = "com.airbnb.android:lottie-compose:1.0.0-alpha07-SNAPSHOT"
+        const val lottie = "com.airbnb.android:lottie-compose:1.0.0-beta03-1"
     }
 
     object Accompanist {
-        const val insets = "dev.chrisbanes.accompanist:accompanist-insets:0.6.2"
+        const val insets = "com.google.accompanist:accompanist-insets:0.9.1"
     }
 
     object GoogleLocation {
@@ -74,7 +74,7 @@ object Libs {
     }
 
     object Hilt {
-        private const val version = "2.33-beta"
+        private const val version = "2.35"
         const val library = "com.google.dagger:hilt-android:$version"
         const val googleAndroidCompiler = "com.google.dagger:hilt-android-compiler:$version"
         const val googleCompiler = "com.google.dagger:hilt-compiler:$version"

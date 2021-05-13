@@ -25,13 +25,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.pp.jetweatherfy.presentation.forecast.base.LocationActivity
 import com.pp.jetweatherfy.presentation.forecast.events.LocationViewEvent
 import com.pp.jetweatherfy.presentation.forecast.navigation.NavigationDirections
 import com.pp.jetweatherfy.presentation.forecast.navigation.NavigationManager
 import com.pp.jetweatherfy.presentation.theme.JetWeatherfyTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
 @AndroidEntryPoint
 class ForecastActivity : LocationActivity() {

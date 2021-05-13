@@ -22,6 +22,7 @@ android {
         versionName Configs.VersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     signingConfigs {
