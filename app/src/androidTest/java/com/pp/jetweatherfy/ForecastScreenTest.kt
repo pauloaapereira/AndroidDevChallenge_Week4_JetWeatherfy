@@ -17,6 +17,7 @@ package com.pp.jetweatherfy
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.pp.jetweatherfy.domain.usecases.cities.AddCity
 import com.pp.jetweatherfy.domain.usecases.cities.FetchCities
 import com.pp.jetweatherfy.domain.usecases.forecast.FetchForecast
@@ -27,7 +28,6 @@ import com.pp.jetweatherfy.presentation.forecast.ForecastScreen
 import com.pp.jetweatherfy.presentation.forecast.ForecastViewModel
 import com.pp.jetweatherfy.presentation.forecast.state.ViewStatus
 import com.pp.jetweatherfy.presentation.theme.JetWeatherfyTheme
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
