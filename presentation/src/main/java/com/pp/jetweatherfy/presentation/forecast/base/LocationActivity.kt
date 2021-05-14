@@ -72,8 +72,8 @@ abstract class LocationActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     protected fun getLocation() {
         locationProvider.lastLocation
-            .addOnCompleteListener { task ->
-                task.result?.let { location ->
+            .addOnSuccessListener {  location ->
+                location?.let {
                     val cityName =
                         geoCoder.getFromLocation(location.latitude, location.longitude, 1)
                             .firstOrNull()?.locality
@@ -89,6 +89,9 @@ abstract class LocationActivity : AppCompatActivity() {
                     )
                     onLocationFailure()
                 }
+            }
+            .addOnFailureListener {
+                onLocationFailure()
             }
     }
 
