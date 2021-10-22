@@ -10,6 +10,10 @@
 ## :scroll: Description
 <!--- Describe your app in one or two sentences -->
 This is a weather forecast application, using Fake data, developed according to the 4th Week of Android Dev Challenges with Jetpack Compose.
+I'm really happy to announce this project was a winner in the Code Quality category! 
+
+<a href="https://android-developers.googleblog.com/2021/05/androiddevchallenge-its-wrap.html">Announced winners</a>
+
 
 <a href="https://github.com/pauloaapereira/AndroidDevChallenge_Week4_JetWeatherfy/releases/download/v1.1/jetweatherfy.apk">Download an APK here!</a>
 
